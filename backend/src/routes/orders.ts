@@ -58,10 +58,8 @@ router.post('/', async (req: Request, res: Response): Promise<any> => {
       }
     });
 
-    // Envoi du récapitulatif sur WhatsApp de manière asynchrone sans bloquer la requête
-    sendWhatsAppOrder(order).catch(error => {
-      console.error('Échec de la notification WhatsApp silencieux:', error);
-    });
+    // La notification WhatsApp est désormais gérée 100% côté client (Vercel) via whatsapp Web Link
+    // sendWhatsAppOrder(order).catch(error => { ... });
 
     return res.status(201).json({ success: true, orderNumber });
     

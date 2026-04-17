@@ -39,6 +39,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 app.listen(port, () => {
   console.log(`Serveur démarré sur http://localhost:${port}`);
   
-  // Démarrer la connexion WhatsApp Web
-  initializeWhatsApp();
+  // Démarrer la connexion WhatsApp Web (Désactivé car géré côté client HTTP Link)
+  // initializeWhatsApp();
 });

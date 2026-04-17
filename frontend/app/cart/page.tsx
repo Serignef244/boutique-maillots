@@ -72,7 +72,29 @@ export default function CartPage() {
             setCart([]);
             localStorage.removeItem('cart');
             dispatchCartUpdated(); // Réinitialiser le compteur du header
-            router.push(`/confirmation?order=${res.orderNumber}`); // Redirection bonus
+            
+            // Format WhatsApp Message
+            let message = `🛒 *NOUVELLE COMMANDE* (N° ${res.orderNumber || 'WEB'})\n\n`;
+            message += `👤 *Client:* ${name}\n`;
+            message += `📞 *Téléphone:* ${phoneClean}\n\n`;
+            message += `*DÉTAILS DES MAILLOTS:*\n`;
+            
+            cart.forEach((item, idx) => {
+                message += `${idx + 1}. *${item.name}*\n`;
+                message += `   - Quantité: ${item.quantity}\n`;
+                message += `   - Taille: ${item.size}\n`;
+                if (item.hasFlockage) {
+                    message += `   - Flocage: ${item.flockageText}\n`;
+                }
+                message += `   - Sous-total: ${(item.price * item.quantity).toLocaleString()} F\n\n`;
+            });
+            
+            message += `💰 *TOTAL À PAYER: ${total.toLocaleString()} FCFA*\n`;
+            message += `_Commande scellée depuis la boutique Vercel._`;
+
+            const encodedMessage = encodeURIComponent(message);
+            // Redirection directe vers l'application WhatsApp du client
+            window.location.href = `https://wa.me/221771384729?text=${encodedMessage}`;
         } else {
             alert(res?.error || "Erreur majeure lors de la création de la commande.");
         }
