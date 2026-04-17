@@ -16,6 +16,11 @@ export default function AdminPage() {
     const [hasFlockage, setHasFlockage] = useState(true);
     const [selectedSizes, setSelectedSizes] = useState<string[]>(["S", "M", "L", "XL"]);
 
+    // Protection Admin
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [passwordAttempt, setPasswordAttempt] = useState('');
+    const [authError, setAuthError] = useState('');
+
     useEffect(() => {
         fetchProducts();
     }, []);
@@ -143,6 +148,41 @@ export default function AdminPage() {
             }
         }
     };
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Mot de passe très simple pour protéger l'interface publique
+        if (passwordAttempt === 'admin221') {
+            setIsAuthenticated(true);
+        } else {
+            setAuthError('Mot de passe incorrect. Accès refusé.');
+        }
+    };
+
+    if (!isAuthenticated) {
+        return (
+            <div className="max-w-md mx-auto mt-20 bg-white p-8 rounded-3xl shadow-xl border border-gray-100 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                <h1 className="text-2xl font-extrabold mb-2 text-center text-gray-900">🔒 Zone Sécurisée</h1>
+                <p className="text-center text-gray-500 text-sm mb-8">Veuillez vous identifier pour gérer la boutique</p>
+                
+                {authError && (
+                    <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-bold text-center mb-6 border border-red-100">
+                        {authError}
+                    </div>
+                )}
+                
+                <form onSubmit={handleLogin} className="space-y-5">
+                    <div>
+                        <input autoFocus type="password" value={passwordAttempt} onChange={e => setPasswordAttempt(e.target.value)} placeholder="• • • • • • • •" className="w-full p-4 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold text-center text-2xl tracking-widest" />
+                    </div>
+                    <button type="submit" className="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-800 transition text-lg shadow-lg">
+                        Déverrouiller le Panel
+                    </button>
+                </form>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-10">
