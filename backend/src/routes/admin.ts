@@ -50,10 +50,12 @@ router.delete('/products/:id', async (req: Request, res: Response): Promise<any>
   try {
     const { id } = req.params;
     
-    // Si l'id existe, on le delete (et il faut delete les options liées si on avait des dépendances rigides, le schema cascade ou pas => OrderItem. S'il n'y a pas de cascade, on risque des erreurs)
-    // Prisma gère cela selon les settings. Au besoin, soft-delete via "inStock: false".
-    // Faisons une suppression simple.
-    
+    // Supprimer délicatement toutes les références de panier qui ont ce maillot
+    await prisma.orderItem.deleteMany({
+      where: { productId: id }
+    });
+
+    // Puis supprimer définitivement le maillot
     await prisma.product.delete({
       where: { id }
     });
