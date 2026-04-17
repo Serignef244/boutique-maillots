@@ -45,6 +45,41 @@ export default function AdminPage() {
         setImages(newImages);
     };
 
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        
+        const availableSlots = 5 - images.filter(img => img.trim() !== '').length;
+        if (availableSlots <= 0) {
+            alert("Vous avez atteint la limite de 5 images.");
+            return;
+        }
+
+        const filesToProcess = files.slice(0, availableSlots);
+
+        filesToProcess.forEach(file => {
+            if (file.size > 2 * 1024 * 1024) {
+               alert(`L'image ${file.name} est trop lourde. Limite: 2 Mo.`);
+               return;
+            }
+            
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64 = reader.result as string;
+                setImages(prev => {
+                    const newImages = [...prev];
+                    const emptyIndex = newImages.findIndex(img => img.trim() === '');
+                    if (emptyIndex !== -1) {
+                        newImages[emptyIndex] = base64;
+                    } else if (newImages.length < 5) {
+                        newImages.push(base64);
+                    }
+                    return newImages;
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
     const handleSizeToggle = (size: string) => {
         if (selectedSizes.includes(size)) {
             setSelectedSizes(selectedSizes.filter(s => s !== size));
@@ -166,13 +201,29 @@ export default function AdminPage() {
                         
                         {/* Images Dynamiques */}
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-2">Images (Max 5 URLs) *</label>
+                            <label className="block text-sm font-bold text-gray-700 mb-2">Images (URL ou Fichier Local) (Max 5) *</label>
+                            
+                            <div className="mb-4 p-4 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition relative">
+                                <span className="font-bold text-gray-600 mb-1">📸 Parcourir votre ordinateur</span>
+                                <span className="text-xs text-gray-400">Jusqu'à 5 images (Max 2Mo chacune)</span>
+                                <input type="file" multiple accept="image/*" onChange={handleFileUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                            </div>
+
                             <div className="space-y-3">
                                 {images.map((img, index) => (
-                                    <div key={index} className="flex gap-2 relative group">
-                                        <input type="url" value={img} onChange={(e) => handleImageChange(index, e.target.value)} placeholder="https://..." className="flex-1 p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white" required={index === 0} />
+                                    <div key={index} className="flex gap-2 relative group items-center">
+                                        {img.startsWith('data:image') ? (
+                                            <div className="w-12 h-12 rounded-lg bg-gray-200 overflow-hidden flex-shrink-0 shadow-inner">
+                                                <img src={img} className="w-full h-full object-cover" alt="upload preview" />
+                                            </div>
+                                        ) : null}
+
+                                        <input type={img.startsWith('data:image') ? "text" : "url"} value={img.startsWith('data:image') ? "[Image Locale Chargée]" : img} onChange={(e) => {
+                                            if (!img.startsWith('data:image')) handleImageChange(index, e.target.value);
+                                        }} disabled={img.startsWith('data:image')} placeholder="https://..." className="flex-1 p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white disabled:opacity-70 disabled:bg-gray-100 truncate" required={index === 0 && !img} />
+                                        
                                         {images.length > 1 && (
-                                            <button type="button" onClick={() => removeImageField(index)} className="w-12 flex items-center justify-center text-red-500 hover:bg-red-50 rounded-xl transition">
+                                            <button type="button" onClick={() => removeImageField(index)} className="w-12 h-12 flex items-center justify-center text-red-500 hover:bg-red-50 rounded-xl transition">
                                                 🗑️
                                             </button>
                                         )}
@@ -180,7 +231,7 @@ export default function AdminPage() {
                                 ))}
                             </div>
                             {images.length < 5 && (
-                                <button type="button" onClick={addImageField} className="mt-3 text-sm font-bold text-blue-600 hover:text-blue-800 transition">+ Ajouter une URL</button>
+                                <button type="button" onClick={addImageField} className="mt-3 text-sm font-bold text-blue-600 hover:text-blue-800 transition">+ Ajouter un champ URL manuellement</button>
                             )}
                         </div>
                         
