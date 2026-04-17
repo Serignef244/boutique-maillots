@@ -11,10 +11,9 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// CORS configuré pour accepter localhost:3000
+// CORS configuré pour accepter les requêtes de Vercel
 app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
+  origin: '*' // Permet à n'importe quel domaine de se connecter
 }));
 
 app.use(express.json({ limit: '50mb' }));
