@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { Client, LocalAuth, RemoteAuth } from 'whatsapp-web.js';
+import puppeteer from 'puppeteer';
 import qrcode from 'qrcode-terminal';
 import { MongoStore } from 'wwebjs-mongo';
 
@@ -23,6 +24,7 @@ export const initializeWhatsApp = async () => {
                     backupSyncIntervalMs: 300000
                 }),
                 puppeteer: {
+                    executablePath: puppeteer.executablePath(),
                     args: ['--no-sandbox', '--disable-setuid-sandbox'] // Requis par Render/Linux cloud
                 }
             });
@@ -36,6 +38,7 @@ export const initializeWhatsApp = async () => {
             client = new Client({
                 authStrategy: new LocalAuth(),
                 puppeteer: {
+                    executablePath: puppeteer.executablePath(),
                     args: ['--no-sandbox', '--disable-setuid-sandbox']
                 }
             });
