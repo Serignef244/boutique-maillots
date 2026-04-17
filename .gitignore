@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.local
+.DS_Store
+dist/
+.next/
+out/
+build/
+*.log
+.auth_info
+.wwebjs_auth
+.wwebjs_cache
+*.tsbuildinfo
