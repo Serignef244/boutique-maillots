@@ -211,7 +211,7 @@ export default function AdminPage() {
                             
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-2">Prix unitaire (FCFA) *</label>
-                                <input required min={1} step={0.01} type="number" value={price} onChange={e => setPrice(e.target.value)} className="w-full p-4 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold" placeholder="0" />
+                                <input required min={1} step="1" type="number" value={price} onChange={e => setPrice(e.target.value.split('.')[0])} className="w-full p-4 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold" placeholder="0" />
                             </div>
 
                             <div className="flex flex-col justify-center pt-8">
