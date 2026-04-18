@@ -1,36 +1,72 @@
 import Link from 'next/link';
 
-interface ProductCardProps {
-    id: string;
-    name: string;
-    price: number;
-    image: string;
-    slug: string;
-}
+export default function ProductCard({ product }: { product: any }) {
+  if (!product) return null;
 
-export default function ProductCard({ name, price, image, slug }: ProductCardProps) {
-    return (
-        <div className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full transform hover:-translate-y-1">
-            <div className="relative aspect-square w-full bg-gray-50 flex-shrink-0 overflow-hidden">
-                <img 
-                    src={image || 'https://via.placeholder.com/400?text=Maillot+Pro'} 
-                    alt={name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-bold px-3 py-1 rounded-full shadow-sm text-gray-900 leading-none">
+  return (
+    <Link href={`/products/${product.slug}`} className="group relative block rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 font-inter">
+      
+      {/* Image Container */}
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-50 flex items-center justify-center">
+        <img 
+          src={product.images?.[0] || 'https://via.placeholder.com/300x400'} 
+          alt={product.name}
+          className="w-full h-full object-cover mix-blend-multiply group-hover:scale-110 transition-transform duration-700 ease-out"
+        />
+        
+        {/* Badges */}
+        <div className="absolute top-4 left-4 flex flex-col gap-2">
+            {product.isNew && (
+                <span className="bg-brand-black text-white text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full shadow-lg">
                     Nouveau
-                </div>
-            </div>
-            <div className="p-5 flex flex-col flex-1">
-                <h3 className="font-bold text-lg text-gray-900 mb-2 truncate group-hover:text-blue-600 transition-colors">{name}</h3>
-                <p className="text-xl text-blue-600 font-bold mt-auto mb-4">{price.toLocaleString()} FCFA</p>
-                <Link 
-                    href={`/products/${slug}`}
-                    className="mt-auto flex items-center justify-center w-full py-3 px-4 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-all shadow-md hover:shadow-lg active:scale-95"
-                >
-                    Acheter maintenant
-                </Link>
-            </div>
+                </span>
+            )}
+            {product.isPromo && (
+                <span className="bg-red-500 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full shadow-lg animate-pulse">
+                    Promo
+                </span>
+            )}
         </div>
-    );
+        
+        {/* Stock Badge */}
+        {!product.inStock && (
+            <div className="absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center">
+                <span className="bg-brand-black text-white font-black px-6 py-2 rounded-full rotate-[-12deg] text-lg uppercase tracking-widest border-2 border-white">
+                    Épuisé
+                </span>
+            </div>
+        )}
+      </div>
+      
+      {/* Footer Info */}
+      <div className="p-5 flex flex-col h-[140px] justify-between relative bg-white z-10 transition-transform duration-300 group-hover:-translate-y-2">
+        <div>
+            {product.team && (
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{product.team}</p>
+            )}
+            <h3 className="font-poppins font-bold text-gray-900 leading-tight line-clamp-2 mix-blend-darken group-hover:text-brand-accent transition-colors">
+                {product.name}
+            </h3>
+        </div>
+        
+        <div className="flex items-center gap-3 mt-2">
+            <p className="text-lg font-black text-brand-black">
+                {product.price.toLocaleString()} F
+            </p>
+            {product.originalPrice && product.isPromo && (
+                <p className="text-sm font-bold text-gray-400 line-through">
+                    {product.originalPrice.toLocaleString()} F
+                </p>
+            )}
+        </div>
+      </div>
+      
+      {/* Hover Button Overlay */}
+      <div className="absolute bottom-[-10px] opacity-0 group-hover:opacity-100 group-hover:bottom-4 left-0 w-full px-5 transition-all duration-300 pointer-events-none hidden md:block z-20">
+          <div className="w-full bg-brand-accent text-white text-center font-black py-2.5 rounded-xl shadow-lg shadow-brand-accent/30 pointer-events-auto">
+              Voir le maillot
+          </div>
+      </div>
+    </Link>
+  );
 }

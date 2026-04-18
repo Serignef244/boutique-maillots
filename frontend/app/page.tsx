@@ -1,50 +1,116 @@
-import ProductCard from '@/components/ProductCard';
+'use client';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { getProducts } from '@/lib/api';
+import ProductCard from '@/components/ProductCard';
 
-export default async function Home() {
-    const products = await getProducts();
+export default function Home() {
+    const [products, setProducts] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchAll = async () => {
+            const data = await getProducts();
+            if (data && Array.isArray(data)) {
+                setProducts(data);
+            }
+            setLoading(false);
+        };
+        fetchAll();
+    }, []);
+
+    const newArrivals = products.filter(p => p.isNew).slice(0, 4);
+    const topSales = products.filter(p => !p.isNew).slice(0, 4); 
+    // Fallback si pas assez de nouveautés
+    const displayNew = newArrivals.length > 0 ? newArrivals : products.slice(0, 4);
+    const displayTop = topSales.length > 0 ? topSales : products.slice(0, 4);
 
     return (
-        <div>
-            {/* Hero Section */}
-            <div className="mb-12 text-center py-10 px-4 bg-gradient-to-tr from-blue-900 to-black rounded-3xl text-white shadow-2xl overflow-hidden relative">
-                <div className="absolute inset-0 bg-white opacity-5 mix-blend-overlay" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E")'}}></div>
-                <div className="relative z-10">
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4">
-                        Équipez-vous en pro
+        <div className="flex justify-center flex-col w-full -mt-8">
+            {/* HERO SECTION */}
+            <section className="relative w-full h-[70vh] min-h-[500px] mb-16 overflow-hidden rounded-b-[40px] md:rounded-b-[60px] flex items-center justify-center">
+                {/* Background Image / Overlay */}
+                <div className="absolute inset-0 bg-brand-black">
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-brand-black/60 to-transparent z-10" />
+                    {/* Pattern ou image de fond */}
+                    <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1518605368461-1e1252281a64?q=80&w=2940&auto=format&fit=crop')] bg-cover bg-center" />
+                </div>
+                
+                <div className="relative z-20 container mx-auto px-4 text-center">
+                    <span className="inline-block bg-brand-accent text-brand-black font-black uppercase tracking-widest text-xs px-4 py-1.5 rounded-full mb-6">Nouvelle Collection 2026</span>
+                    <h1 className="font-poppins font-black text-5xl md:text-7xl lg:text-8xl text-white uppercase tracking-tighter mb-6 drop-shadow-2xl">
+                        VOTRE PASSION,<br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-white">NOTRE MAILLOT.</span>
                     </h1>
-                    <p className="text-lg md:text-xl text-blue-100 max-w-2xl mx-auto font-medium">
-                        Découvrez notre collection de maillots de football originaux, personnalisables à votre nom.
+                    <p className="text-gray-300 font-medium text-lg md:text-xl max-w-2xl mx-auto mb-10">
+                        Découvrez la collection officielle des plus grandes équipes. Flocage authentique gratuit sur une sélection VIP.
                     </p>
+                    <div className="flex flex-col sm:flex-row justify-center gap-4">
+                        <Link href="/explorer" className="bg-brand-accent text-brand-black font-black text-lg px-8 py-4 rounded-full hover:bg-green-400 hover:scale-105 transition-all shadow-lg shadow-brand-accent/20">
+                            Découvrir le catalogue
+                        </Link>
+                        <Link href="/equipe/senegal" className="bg-white/10 backdrop-blur-md border border-white/20 text-white font-black text-lg px-8 py-4 rounded-full hover:bg-white/20 transition-all">
+                            Voir Maillots Sénégal
+                        </Link>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            {/* List */}
-            <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl md:text-3xl font-bold border-l-4 border-blue-600 pl-4">Nouveautés</h2>
+            <div className="container mx-auto px-4 max-w-7xl space-y-24 pb-20">
+                {/* NOUVEAUTES */}
+                <section>
+                    <div className="flex justify-between items-end mb-8">
+                        <div>
+                            <h2 className="font-poppins font-black text-3xl md:text-4xl text-brand-black tracking-tight">Nouveautés</h2>
+                            <p className="text-gray-500 font-medium mt-1">Les derniers arrivages de la semaine</p>
+                        </div>
+                        <Link href="/explorer" className="hidden sm:block text-brand-accent font-bold hover:underline">Tout voir</Link>
+                    </div>
+                    {loading ? (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                            {[1,2,3,4].map(n => <div key={n} className="aspect-[3/4] bg-gray-100 animate-pulse rounded-2xl w-full"></div>)}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                            {displayNew.map(product => <ProductCard key={product.id} product={product} />)}
+                        </div>
+                    )}
+                </section>
+
+                {/* PROMO BANNER */}
+                <section className="relative w-full h-[250px] bg-gray-900 rounded-3xl overflow-hidden shadow-2xl flex items-center p-8 md:p-16 group">
+                    <div className="absolute inset-0 bg-brand-accent opacity-0 group-hover:opacity-10 transition-opacity duration-700"></div>
+                    <div className="relative z-10 w-full md:w-1/2">
+                        <h2 className="font-poppins font-black text-3xl md:text-5xl text-white mb-4 leading-tight uppercase">Personnalisez<br/>votre légende</h2>
+                        <p className="text-gray-300 font-medium mb-6">Ajoutez votre nom et numéro en flocage officiel pour seulement 2000 FCFA supplémentaire.</p>
+                        <Link href="/explorer" className="inline-block bg-white text-brand-black font-black px-6 py-3 rounded-full hover:bg-gray-100 transition-colors">
+                            Voir les options
+                        </Link>
+                    </div>
+                    <div className="absolute right-[-10%] md:right-10 top-1/2 -translate-y-1/2 opacity-20 md:opacity-100 text-brand-accent scale-[3] md:scale-[5] rotate-12 blur-[2px] font-black">
+                        10
+                    </div>
+                </section>
+
+                {/* MEILLEURES VENTES */}
+                <section>
+                    <div className="flex justify-between items-end mb-8">
+                        <div>
+                            <h2 className="font-poppins font-black text-3xl md:text-4xl text-brand-black tracking-tight">Top Ventes</h2>
+                            <p className="text-gray-500 font-medium mt-1">Les choix préférés de notre communauté</p>
+                        </div>
+                    </div>
+                    {loading ? (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                            {[1,2,3,4].map(n => <div key={n} className="aspect-[3/4] bg-gray-100 animate-pulse rounded-2xl w-full"></div>)}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                            {displayTop.map(product => <ProductCard key={product.id} product={product} />)}
+                        </div>
+                    )}
+                </section>
             </div>
-            
-            {!products || products.length === 0 ? (
-                <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
-                    <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                    </svg>
-                    <p className="text-xl font-medium text-gray-600">Aucun produit en stock.</p>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 xl:gap-8">
-                    {products.map((product: any) => (
-                        <ProductCard 
-                            key={product.id}
-                            id={product.id}
-                            name={product.name}
-                            price={product.price}
-                            image={product.images && product.images[0] ? product.images[0] : ''}
-                            slug={product.slug}
-                        />
-                    ))}
-                </div>
-            )}
         </div>
     );
 }
