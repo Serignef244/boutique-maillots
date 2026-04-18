@@ -1,5 +1,6 @@
+'use client';
 import Link from 'next/link';
-import { Facebook, Twitter, Instagram, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
+import { ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -15,13 +16,14 @@ export default function Footer() {
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-accent hover:text-black transition-all">
-                <Facebook size={20} />
+                {/* Icône de remplacement */}
+                <span className="font-bold">fb</span>
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-accent hover:text-black transition-all">
-                <Twitter size={20} />
+                <span className="font-bold">x</span>
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-accent hover:text-black transition-all">
-                <Instagram size={20} />
+                <span className="font-bold">ig</span>
               </a>
             </div>
           </div>
