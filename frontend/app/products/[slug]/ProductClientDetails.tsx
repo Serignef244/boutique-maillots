@@ -148,6 +148,12 @@ export default function ProductClientDetails({ product }: { product: any }) {
                 {product.hasFlockage && (
                     <div className={`mb-8 p-6 rounded-3xl border-2 transition-all duration-300 ${hasFlockage ? 'bg-brand-black text-white border-brand-black' : 'bg-gray-50 border-gray-100'}`}>
                         <label className="flex items-center justify-between cursor-pointer group">
+                            <input 
+                                type="checkbox" 
+                                className="hidden" 
+                                checked={hasFlockage} 
+                                onChange={(e) => setHasFlockage(e.target.checked)} 
+                            />
                             <div className="flex items-center gap-4">
                                 <div className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition-colors ${hasFlockage ? 'bg-brand-accent border-brand-accent' : 'border-gray-400 bg-transparent'}`}>
                                     {hasFlockage && <div className="w-2.5 h-2.5 bg-brand-black rounded-full" />}
