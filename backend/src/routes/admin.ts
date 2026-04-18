@@ -6,7 +6,7 @@ const router = Router();
 
 router.post('/products', async (req: Request, res: Response): Promise<any> => {
   try {
-    const { name, description, price, images, hasFlockage, sizes } = req.body;
+    const { name, description, price, images, hasFlockage, sizes, team, season, isNew, isPromo, originalPrice } = req.body;
 
     if (!name || name.trim().length < 3) {
       return res.status(400).json({ error: 'Le nom est requis et doit faire au moins 3 caractères' });
@@ -28,9 +28,14 @@ router.post('/products', async (req: Request, res: Response): Promise<any> => {
         slug,
         description: description || '',
         price: Number(price),
+        originalPrice: originalPrice ? Number(originalPrice) : null,
         images: Array.isArray(images) ? images : [],
         hasFlockage: typeof hasFlockage === 'boolean' ? hasFlockage : true,
-        sizes: productSizes
+        sizes: productSizes,
+        team: team || null,
+        season: season || null,
+        isNew: typeof isNew === 'boolean' ? isNew : true,
+        isPromo: typeof isPromo === 'boolean' ? isPromo : false
       }
     });
 

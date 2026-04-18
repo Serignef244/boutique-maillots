@@ -15,6 +15,13 @@ export default function AdminPage() {
     const [images, setImages] = useState<string[]>(['']);
     const [hasFlockage, setHasFlockage] = useState(true);
     const [selectedSizes, setSelectedSizes] = useState<string[]>(["S", "M", "L", "XL"]);
+    
+    // Nouveaux champs Sport Premium
+    const [team, setTeam] = useState('');
+    const [season, setSeason] = useState('');
+    const [originalPrice, setOriginalPrice] = useState('');
+    const [isNew, setIsNew] = useState(true);
+    const [isPromo, setIsPromo] = useState(false);
 
     // Protection Admin
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -118,7 +125,12 @@ export default function AdminPage() {
                     price: Number(price), 
                     images: filteredImages, 
                     hasFlockage,
-                    sizes: selectedSizes
+                    sizes: selectedSizes,
+                    team,
+                    season,
+                    originalPrice: originalPrice ? Number(originalPrice) : null,
+                    isNew,
+                    isPromo
                 }),
             });
             
@@ -127,6 +139,7 @@ export default function AdminPage() {
                 setMessage('✅ Le produit a été ajouté avec succès dans la base de données !');
                 // Réinitialiser le formulaire
                 setName(''); setDescription(''); setPrice(''); setImages(['']); setHasFlockage(true); setSelectedSizes(["S", "M", "L", "XL"]);
+                setTeam(''); setSeason(''); setOriginalPrice(''); setIsNew(true); setIsPromo(false);
                 fetchProducts(); // Refresh la liste
             } else {
                 setMessage(data.error || 'Erreur inconnue lors de l\'ajout.');
@@ -209,15 +222,41 @@ export default function AdminPage() {
                                 <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full p-4 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[120px] font-medium resize-none" placeholder="Matière respirante, coupe sportive..." />
                             </div>
                             
+                            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Équipe / Nation (Optionnel)</label>
+                                    <input type="text" value={team} onChange={e => setTeam(e.target.value)} className="w-full p-3 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ex: Real Madrid, Sénégal..." />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Saison (Optionnel)</label>
+                                    <input type="text" value={season} onChange={e => setSeason(e.target.value)} className="w-full p-3 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ex: 2024/2025" />
+                                </div>
+                            </div>
+                            
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Prix unitaire (FCFA) *</label>
-                                <input required min={1} step="1" type="number" value={price} onChange={e => setPrice(e.target.value.split('.')[0])} className="w-full p-4 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold" placeholder="0" />
+                                <label className="block text-sm font-bold text-gray-700 mb-2">Prix de vente (FCFA) *</label>
+                                <input required min={1} step="1" type="number" value={price} onChange={e => setPrice(e.target.value.split('.')[0])} className="w-full p-4 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold text-blue-600" placeholder="0" />
                             </div>
 
-                            <div className="flex flex-col justify-center pt-8">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-2">Prix barré (Ancien prix FCFA)</label>
+                                <input min={1} step="1" type="number" value={originalPrice} onChange={e => setOriginalPrice(e.target.value.split('.')[0])} className="w-full p-4 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-gray-300 font-bold text-gray-400 line-through" placeholder="Optionnel" />
+                            </div>
+
+                            <div className="md:col-span-2 flex flex-wrap gap-6 p-5 border border-gray-200 rounded-xl bg-white">
                                 <label className="flex items-center gap-3 cursor-pointer">
-                                    <input type="checkbox" checked={hasFlockage} onChange={(e) => setHasFlockage(e.target.checked)} className="w-5 h-5 rounded" />
+                                    <input type="checkbox" checked={hasFlockage} onChange={(e) => setHasFlockage(e.target.checked)} className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500" />
                                     <span className="font-bold text-gray-800">Flocage disponible (+2000 F)</span>
+                                </label>
+                                
+                                <label className="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" checked={isNew} onChange={(e) => setIsNew(e.target.checked)} className="w-5 h-5 text-green-500 rounded focus:ring-green-500" />
+                                    <span className="font-bold text-green-600">Badge "Nouveauté"</span>
+                                </label>
+
+                                <label className="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" checked={isPromo} onChange={(e) => setIsPromo(e.target.checked)} className="w-5 h-5 text-red-500 rounded focus:ring-red-500" />
+                                    <span className="font-bold text-red-600">Badge "Promo"</span>
                                 </label>
                             </div>
                         </div>

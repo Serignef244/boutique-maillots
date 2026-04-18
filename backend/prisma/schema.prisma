@@ -13,10 +13,18 @@ model Product {
   slug          String   @unique
   description   String
   price         Float
+  originalPrice Float?   // Prix barré si en promo
   images        String[]
   hasFlockage   Boolean  @default(true)
   sizes         Json     @default("[\"S\",\"M\",\"L\",\"XL\"]")
   inStock       Boolean  @default(true)
+  
+  // Nouveaux champs pour filtres et badges
+  team          String?
+  season        String?
+  isNew         Boolean  @default(true)
+  isPromo       Boolean  @default(false)
+  
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   orders        OrderItem[]
