@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { ShoppingBag } from 'lucide-react';
 
 export default function CartIcon() {
     const [count, setCount] = useState(0);
@@ -24,14 +25,10 @@ export default function CartIcon() {
     }, []);
 
     return (
-        <Link href="/cart" className="relative p-2.5 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 transition duration-200 shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="8" cy="21" r="1" />
-                <circle cx="19" cy="21" r="1" />
-                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-            </svg>
+        <Link href="/cart" className="relative p-1 flex items-center justify-center transition-opacity hover:opacity-60">
+            <ShoppingBag size={24} strokeWidth={1.5} className="text-black" />
             {count > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-sm ring-2 ring-white">
+                <span className="absolute -top-1 -right-1 bg-black text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full leading-none">
                     {count}
                 </span>
             )}

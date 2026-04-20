@@ -29,20 +29,20 @@ function RechercheContent() {
     }, [query]);
 
     return (
-        <div className="min-h-[70vh] pb-24 max-w-7xl mx-auto px-4 text-white">
-            <div className="mb-16 text-center pt-10">
-                <h1 className="font-display font-black text-5xl md:text-8xl tracking-widest uppercase mb-4 leading-none">
-                    RÉSULTATS : <span className="text-pitch">"{query}"</span>
+        <div className="min-h-[70vh] pb-32 max-w-7xl mx-auto px-4 text-black bg-white pt-24">
+            <div className="mb-20 text-center">
+                <h1 className="font-display font-black text-6xl md:text-[8rem] tracking-tighter uppercase mb-4 leading-none text-black">
+                    VOTRE RECHERCHE
                 </h1>
-                <p className="font-body text-gray-500 text-xl tracking-[0.2em] uppercase">
-                    {loading ? 'RECHERCHE EN COURS...' : `${results.length} MAILLOT${results.length > 1 ? 'S' : ''} TROUVÉ${results.length > 1 ? 'S' : ''}`}
+                <p className="font-body text-gray-400 text-lg tracking-[0.3em] uppercase">
+                    {loading ? 'ANALYSANT LA COLLECTION...' : `"${query}" • ${results.length} MODÈLE${results.length > 1 ? 'S' : ''} TROUVÉ${results.length > 1 ? 'S' : ''}`}
                 </p>
             </div>
 
             {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
                     {[1, 2, 3, 4].map(n => (
-                        <div key={n} className="aspect-[4/5] bg-jersey animate-pulse border border-white/5 w-full"></div>
+                        <div key={n} className="aspect-[4/5] bg-brand-grey animate-pulse w-full"></div>
                     ))}
                 </div>
             ) : (
@@ -50,16 +50,16 @@ function RechercheContent() {
                     {results.length > 0 ? (
                         <motion.div 
                             layout
-                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16"
                         >
                             {results.map(product => (
                                 <motion.div
                                     key={product.id}
                                     layout
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{ duration: 0.3 }}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.4 }}
                                 >
                                     <ProductCard product={product} />
                                 </motion.div>
@@ -69,9 +69,9 @@ function RechercheContent() {
                         <motion.div 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="flex flex-col items-center justify-center py-32 bg-jersey border border-white/5"
+                            className="flex flex-col items-center justify-center py-32 bg-brand-grey"
                         >
-                            <p className="text-3xl font-display text-gray-500 tracking-[0.2em] uppercase text-center">Aucun match pour votre recherche</p>
+                            <p className="text-2xl font-display text-gray-400 tracking-[0.3em] uppercase text-center px-4">Aucun maillot ne correspond à votre recherche</p>
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -82,7 +82,7 @@ function RechercheContent() {
 
 export default function RecherchePage() {
     return (
-        <Suspense fallback={<div className="flex flex-col items-center justify-center py-32 text-white font-display text-3xl tracking-widest">CHARGEMENT...</div>}>
+        <Suspense fallback={<div className="flex flex-col items-center justify-center py-32 text-black font-display text-3xl tracking-widest">CHARGEMENT...</div>}>
             <RechercheContent />
         </Suspense>
     );

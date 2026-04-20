@@ -58,24 +58,24 @@ export default function SearchBar() {
 
     return (
         <div className="relative w-full" ref={searchRef}>
-            <form onSubmit={handleSubmit} className="relative group">
+            <form onSubmit={handleSubmit} className="relative group border-b border-gray-100">
                 <input
                     type="text"
                     value={query}
                     onChange={handleSearch}
                     onFocus={() => setIsFocused(true)}
-                    placeholder="RECHERCHER UN MAILLOT..."
-                    className="w-full bg-dark border border-white/10 text-white font-body text-sm tracking-widest py-3 pr-12 pl-6 focus:outline-none focus:border-pitch focus:shadow-[0_0_15px_rgba(0,255,135,0.2)] transition-all placeholder:text-gray-700"
+                    placeholder="RECHERCHER DANS LA COLLECTION"
+                    className="w-full bg-white text-black font-display text-base tracking-[0.2em] py-4 pr-12 pl-0 focus:outline-none placeholder:text-gray-300 uppercase transition-all"
                 />
                 
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-4">
                     {query.length > 0 && (
-                        <button type="button" onClick={() => {setQuery(''); setSuggestions([])}} className="text-gray-500 hover:text-white transition-colors">
-                            <X size={18} />
+                        <button type="button" onClick={() => {setQuery(''); setSuggestions([])}} className="text-gray-300 hover:text-black transition-colors">
+                            <X size={20} />
                         </button>
                     )}
-                    <button type="submit" className="text-gray-500 hover:text-pitch transition-colors">
-                        <Search size={20} />
+                    <button type="submit" className="text-black hover:opacity-60 transition-opacity">
+                        <Search size={22} />
                     </button>
                 </div>
             </form>
@@ -83,13 +83,13 @@ export default function SearchBar() {
             <AnimatePresence>
                 {isFocused && (suggestions.length > 0 || query.length > 2) && (
                     <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 5 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        className="absolute top-full left-0 w-full mt-3 bg-dark border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden z-50"
+                        exit={{ opacity: 0, y: 5 }}
+                        className="absolute top-full left-0 w-full bg-white shadow-2xl overflow-hidden z-[100] border border-gray-100"
                     >
-                        <div className="p-3">
-                            <p className="font-display text-lg text-pitch uppercase tracking-[0.2em] px-3 pt-2 pb-4 border-b border-white/5 mb-2">RÉSULTATS RAPIDES</p>
+                        <div className="p-4">
+                            <p className="font-display text-xs text-gray-400 uppercase tracking-[0.3em] px-4 pt-2 pb-4 border-b border-gray-50 mb-2">SUGGESTIONS</p>
                             
                             {suggestions.length > 0 ? (
                                 <div className="space-y-1">
@@ -101,27 +101,27 @@ export default function SearchBar() {
                                                 setQuery('');
                                                 router.push(`/products/${product.slug}`);
                                             }}
-                                            className="w-full text-left px-4 py-3 hover:bg-white/5 flex items-center gap-5 transition-colors group"
+                                            className="w-full text-left px-4 py-4 hover:bg-brand-grey flex items-center gap-6 transition-colors group"
                                         >
-                                            <div className="w-14 h-14 bg-jersey border border-white/5 flex items-center justify-center p-2 group-hover:border-pitch/50 transition-colors">
-                                                <img src={product.images[0] || 'https://via.placeholder.com/60/000/fff?text=ICON'} alt={product.name} className="w-full h-full object-contain filter drop-shadow-md" />
+                                            <div className="w-16 h-16 bg-brand-grey flex items-center justify-center p-2 transition-colors">
+                                                <img src={product.images[0] || 'https://via.placeholder.com/60/F5F5F5/000?text=ICON'} alt={product.name} className="w-full h-full object-contain mix-blend-multiply" />
                                             </div>
-                                            <div className="flex-1 overflow-hidden">
-                                                <p className="font-display text-xl text-white tracking-widest truncate group-hover:text-pitch transition-colors uppercase">{product.name}</p>
-                                                <p className="font-body text-sm text-gold uppercase tracking-tighter">{product.price.toLocaleString()} FCFA</p>
+                                            <div className="flex-1">
+                                                <p className="font-display text-xl text-black tracking-widest uppercase truncate">{product.name}</p>
+                                                <p className="font-body text-xs text-gray-400 uppercase tracking-widest">{product.price.toLocaleString()} FCFA</p>
                                             </div>
                                         </button>
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-gray-600 font-body text-center py-6 uppercase tracking-widest">Aucun maillot trouvé pour "{query}"</p>
+                                <p className="text-gray-400 font-body text-center py-10 uppercase tracking-widest text-sm">Aucun résultat pour "{query}"</p>
                             )}
                         </div>
                         
                         {suggestions.length > 0 && (
                             <button 
                                 onClick={handleSubmit}
-                                className="w-full bg-pitch py-4 text-dark font-display text-xl tracking-[0.2em] hover:bg-white transition-colors border-t border-white/10 uppercase"
+                                className="w-full bg-black py-5 text-white font-display text-lg tracking-[0.3em] hover:opacity-90 transition-opacity uppercase"
                             >
                                 TOUT VOIR ({allProducts.filter(p => p.name.toLowerCase().includes(query.toLowerCase())).length})
                             </button>

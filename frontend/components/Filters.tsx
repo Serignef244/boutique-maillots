@@ -12,7 +12,7 @@ export default function Filters({
 }) {
     const [isOpenMobile, setIsOpenMobile] = useState(false);
     
-    const teams = ['PSG', 'Real Madrid', 'Sénégal', 'Barcelone', 'Marseille', 'Manchester City'];
+    const teams = ['PSG', 'Real Madrid', 'Sénégal', 'Barcelone', 'Marseille', 'Man City'];
     const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
     
     const [openSections, setOpenSections] = useState({
@@ -42,24 +42,24 @@ export default function Filters({
     };
 
     const FilterContent = () => (
-        <div className="w-full h-full flex flex-col p-6 lg:p-0 text-white font-body">
+        <div className="w-full h-full flex flex-col p-6 lg:p-0 text-black font-body">
             {/* Header Mobile */}
-            <div className="flex justify-between items-center lg:hidden mb-8 border-b border-white/10 pb-4">
-                <h2 className="font-display text-3xl flex items-center gap-3 tracking-widest uppercase">
-                    <FilterIcon size={24} className="text-pitch" /> FILTRES
+            <div className="flex justify-between items-center lg:hidden mb-12 border-b border-gray-100 pb-6">
+                <h2 className="font-display text-4xl tracking-tighter uppercase">
+                    FILTRES
                 </h2>
-                <button onClick={() => setIsOpenMobile(false)} className="p-2 border border-white/10 hover:border-white transition-colors">
-                    <X size={24} />
+                <button onClick={() => setIsOpenMobile(false)} className="p-2">
+                    <X size={28} strokeWidth={1.5} />
                 </button>
             </div>
 
-            <div className="space-y-10 flex-1 overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-12 flex-1 overflow-y-auto pr-2">
                 
                 {/* Section Equipes */}
-                <div className="border-b border-white/5 pb-8">
-                    <button onClick={() => toggleSection('equipe')} className="flex w-full justify-between items-center mb-6">
-                        <span className="font-display text-2xl tracking-widest text-white uppercase">ÉQUIPES • NATIONS</span>
-                        {openSections.equipe ? <ChevronUp size={20} className="text-pitch" /> : <ChevronDown size={20} />}
+                <div className="border-b border-gray-100 pb-10">
+                    <button onClick={() => toggleSection('equipe')} className="flex w-full justify-between items-center mb-8">
+                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase">CHOISIR L'ÉQUIPE</span>
+                        {openSections.equipe ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                     </button>
                     <AnimatePresence>
                         {openSections.equipe && (
@@ -70,17 +70,17 @@ export default function Filters({
                                 className="space-y-4 overflow-hidden"
                             >
                                 {teams.map(team => (
-                                    <label key={team} className="flex items-center gap-4 cursor-pointer group w-fit">
+                                    <label key={team} className="flex items-center gap-4 cursor-pointer group w-full">
                                         <input 
                                             type="checkbox" 
                                             className="hidden" 
                                             checked={activeFilters.teams?.includes(team)}
                                             onChange={() => handleTeamToggle(team)}
                                         />
-                                        <div className={`w-6 h-6 border-2 transition-all flex items-center justify-center ${activeFilters.teams?.includes(team) ? 'bg-pitch border-pitch' : 'border-white/20 bg-transparent group-hover:border-white/50'}`}>
-                                            {activeFilters.teams?.includes(team) && <div className="w-2.5 h-2.5 bg-dark" />}
+                                        <div className={`w-5 h-5 border transition-all flex items-center justify-center ${activeFilters.teams?.includes(team) ? 'bg-black border-black' : 'border-gray-200 group-hover:border-black'}`}>
+                                            {activeFilters.teams?.includes(team) && <div className="w-2 h-2 bg-white" />}
                                         </div>
-                                        <span className={`font-body text-lg uppercase tracking-wider transition-colors ${activeFilters.teams?.includes(team) ? 'text-pitch' : 'text-gray-500 group-hover:text-white'}`}>{team}</span>
+                                        <span className={`font-body text-base uppercase tracking-widest transition-colors ${activeFilters.teams?.includes(team) ? 'text-black font-bold' : 'text-gray-400 group-hover:text-black'}`}>{team}</span>
                                     </label>
                                 ))}
                             </motion.div>
@@ -89,10 +89,10 @@ export default function Filters({
                 </div>
 
                 {/* Section Tailles */}
-                <div className="border-b border-white/5 pb-8">
-                    <button onClick={() => toggleSection('taille')} className="flex w-full justify-between items-center mb-6">
-                        <span className="font-display text-2xl tracking-widest text-white uppercase">TAILLES</span>
-                        {openSections.taille ? <ChevronUp size={20} className="text-pitch" /> : <ChevronDown size={20} />}
+                <div className="border-b border-gray-100 pb-10">
+                    <button onClick={() => toggleSection('taille')} className="flex w-full justify-between items-center mb-8">
+                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase">TAILLES</span>
+                        {openSections.taille ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                     </button>
                     <AnimatePresence>
                         {openSections.taille && (
@@ -100,16 +100,16 @@ export default function Filters({
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: 'auto' }}
                                 exit={{ opacity: 0, height: 0 }}
-                                className="flex flex-wrap gap-3 overflow-hidden pt-1"
+                                className="flex flex-wrap gap-2 overflow-hidden pt-1"
                             >
                                 {sizes.map(size => (
                                     <button
                                         key={size}
                                         onClick={() => handleSizeToggle(size)}
-                                        className={`w-14 h-12 font-display text-2xl tracking-widest transition-all border ${
+                                        className={`px-6 py-3 font-display text-lg tracking-widest transition-all border ${
                                             activeFilters.sizes?.includes(size)
-                                                ? 'bg-pitch text-dark border-pitch shadow-[0_0_15px_rgba(0,255,135,0.3)]'
-                                                : 'bg-dark text-white border-white/20 hover:border-white hover:bg-white/5'
+                                                ? 'bg-black text-white border-black'
+                                                : 'bg-white text-black border-gray-200 hover:border-black'
                                         }`}
                                     >
                                         {size}
@@ -121,23 +121,23 @@ export default function Filters({
                 </div>
 
                 {/* Autres filtres (Promos, Stock) */}
-                <div className="pb-8 space-y-6">
+                <div className="pb-10 space-y-8">
                     <label className="flex items-center justify-between cursor-pointer group">
-                        <span className="font-display text-2xl tracking-widest text-red-500 uppercase">PROMOTIONS</span>
+                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase">EN PROMOTION</span>
                         <div className="relative">
                             <input type="checkbox" className="hidden" checked={activeFilters.promoOnly || false} onChange={e => onFilterChange('promoOnly', e.target.checked)} />
-                            <div className={`w-12 h-6 flex items-center rounded-none p-1 transition-colors ${activeFilters.promoOnly ? 'bg-red-600' : 'bg-white/10 border border-white/10'}`}>
-                                <div className={`bg-white w-4 h-4 shadow-xl transform transition-transform ${activeFilters.promoOnly ? 'translate-x-6' : ''}`} />
+                            <div className={`w-12 h-6 flex items-center p-1 transition-colors ${activeFilters.promoOnly ? 'bg-black' : 'bg-gray-100 border border-gray-200'}`}>
+                                <div className={`bg-white w-4 h-4 shadow-sm transform transition-transform ${activeFilters.promoOnly ? 'translate-x-6' : ''}`} />
                             </div>
                         </div>
                     </label>
 
                     <label className="flex items-center justify-between cursor-pointer group">
-                        <span className="font-display text-2xl tracking-widest text-white uppercase">DISPONIBILITÉ</span>
+                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase">EN STOCK</span>
                         <div className="relative">
                             <input type="checkbox" className="hidden" checked={activeFilters.inStockOnly || false} onChange={e => onFilterChange('inStockOnly', e.target.checked)} />
-                            <div className={`w-12 h-6 flex items-center rounded-none p-1 transition-colors ${activeFilters.inStockOnly ? 'bg-pitch' : 'bg-white/10 border border-white/10'}`}>
-                                <div className={`bg-white w-4 h-4 shadow-xl transform transition-transform ${activeFilters.inStockOnly ? 'translate-x-6 text-dark' : ''}`} />
+                            <div className={`w-12 h-6 flex items-center p-1 transition-colors ${activeFilters.inStockOnly ? 'bg-black' : 'bg-gray-100 border border-gray-200'}`}>
+                                <div className={`bg-white w-4 h-4 shadow-sm transform transition-transform ${activeFilters.inStockOnly ? 'translate-x-6' : ''}`} />
                             </div>
                         </div>
                     </label>
@@ -145,12 +145,12 @@ export default function Filters({
             </div>
             
             {/* Pied mobile */}
-            <div className="lg:hidden mt-auto pt-6 border-t border-white/10">
+            <div className="lg:hidden mt-auto pt-8">
                 <button 
                     onClick={() => setIsOpenMobile(false)} 
-                    className="w-full bg-pitch text-dark font-display text-2xl tracking-[0.2em] py-4 hover:shadow-[0_0_20px_rgba(0,255,135,0.4)] transition-all uppercase"
+                    className="w-full bg-black text-white font-display text-xl tracking-[0.2em] py-5 uppercase"
                 >
-                    APPLIQUER
+                    VOIR LES RÉSULTATS
                 </button>
             </div>
         </div>
@@ -162,37 +162,34 @@ export default function Filters({
             <div className="lg:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-40">
                 <button 
                     onClick={() => setIsOpenMobile(true)}
-                    className="flex items-center gap-3 bg-pitch text-dark font-display text-xl tracking-widest px-8 py-4 shadow-[0_0_25px_rgba(0,255,135,0.4)] border-2 border-dark"
+                    className="flex items-center gap-3 bg-white text-black font-display text-lg tracking-[0.2em] px-10 py-5 shadow-2xl border-2 border-black"
                 >
-                    <FilterIcon size={18} /> FILTRER
-                    {(activeFilters.teams?.length > 0 || activeFilters.sizes?.length > 0 || activeFilters.promoOnly) && (
-                        <div className="w-3 h-3 bg-dark animate-pulse ml-1" />
-                    )}
+                    FILTRER LA COLLECTION
                 </button>
             </div>
 
             {/* Sidebar Desktop */}
-            <aside className="hidden lg:block w-72 flex-shrink-0 sticky top-28 h-fit pb-10">
+            <aside className="hidden lg:block w-72 flex-shrink-0 sticky top-32 h-fit pb-20">
                 <FilterContent />
             </aside>
 
             {/* Modal Mobile */}
             <AnimatePresence>
                 {isOpenMobile && (
-                    <div className="fixed inset-0 z-50 lg:hidden flex justify-end">
+                    <div className="fixed inset-0 z-[100] lg:hidden flex justify-end">
                         <motion.div 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="absolute inset-0 bg-black/80 backdrop-blur-md" 
+                            className="absolute inset-0 bg-black/60" 
                             onClick={() => setIsOpenMobile(false)} 
                         />
                         <motion.div 
                             initial={{ x: '100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
-                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="relative w-[300px] sm:w-[380px] bg-dark h-full shadow-[0_0_50px_rgba(0,0,0,1)] border-l border-white/5"
+                            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+                            className="relative w-full sm:w-[400px] bg-white h-full shadow-2xl"
                         >
                             <FilterContent />
                         </motion.div>

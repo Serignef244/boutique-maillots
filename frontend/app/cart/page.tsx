@@ -5,8 +5,7 @@ import { dispatchCartUpdated, FLOCKAGE_PRICE } from '@/lib/cart';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import AnimatedCounter from '@/components/ui/AnimatedCounter';
-import NeonButton from '@/components/ui/NeonButton';
+import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 
 export default function CartPage() {
     const router = useRouter();
@@ -46,15 +45,10 @@ export default function CartPage() {
 
     const submitOrder = async (e: React.FormEvent) => {
         e.preventDefault();
-        
         const phoneClean = phone.replace(/\s+/g, '');
-        if (phoneClean.length < 8) {
-            alert('Le numéro de téléphone doit contenir au moins 8 chiffres pour être valide.');
-            return;
-        }
+        if (phoneClean.length < 8) return;
 
         setLoading(true);
-
         const orderData = {
             customerName: name,
             customerPhone: phoneClean,
@@ -80,91 +74,81 @@ export default function CartPage() {
             message += `👤 *Client:* ${name}\n`;
             message += `📞 *Téléphone:* ${phoneClean}\n\n`;
             message += `*DÉTAILS DES MAILLOTS:*\n`;
-            
             cart.forEach((item, idx) => {
                 message += `${idx + 1}. *${item.name}*\n`;
                 message += `   - Quantité: ${item.quantity}\n`;
                 message += `   - Taille: ${item.size}\n`;
-                if (item.hasFlockage) {
-                    message += `   - Flocage: ${item.flockageText}\n`;
-                }
-                message += `   - Sous-total: ${(item.price * item.quantity).toLocaleString()} F\n\n`;
+                if (item.hasFlockage) message += `   - Flocage: ${item.flockageText}\n`;
+                message += `   - S/Total: ${(item.price * item.quantity).toLocaleString()} F\n\n`;
             });
-            
-            message += `💰 *TOTAL À PAYER: ${total.toLocaleString()} FCFA*\n`;
-            message += `_Commande scellée depuis la boutique Vercel._`;
-
+            message += `💰 *TOTAL: ${total.toLocaleString()} FCFA*\n`;
             const encodedMessage = encodeURIComponent(message);
             window.location.href = `https://wa.me/221771384729?text=${encodedMessage}`;
-        } else {
-            alert(res?.error || "Erreur majeure lors de la création de la commande.");
         }
     };
 
     if (!isMounted) return null;
 
     return (
-        <div className="max-w-7xl mx-auto py-16 px-4 font-body min-h-[80vh] text-white">
-            <h1 className="text-5xl md:text-7xl font-display font-black mb-16 text-white tracking-widest uppercase">
-                <span className="text-pitch">VOTRE</span> PANIER
+        <div className="max-w-7xl mx-auto py-24 px-4 font-body min-h-[80vh] text-black bg-white">
+            <h1 className="text-6xl md:text-[8rem] font-display font-black mb-16 text-black tracking-tighter uppercase leading-none">
+                PANIER
             </h1>
             
             {cart.length === 0 ? (
                 <motion.div 
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="text-center py-32 bg-jersey rounded-none border-2 border-white/10 flex flex-col items-center"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-center py-32 bg-brand-grey flex flex-col items-center gap-8"
                 >
-                    <div className="w-24 h-24 bg-dark flex items-center justify-center rounded-full mb-6 border border-white/20">
-                        <svg className="w-10 h-10 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-                    </div>
-                    <p className="text-3xl font-display text-gray-500 mb-8 uppercase tracking-[0.2em]">Votre chariot est vide</p>
-                    <Link href="/explorer">
-                        <NeonButton>DÉCOUVRIR LE CATALOGUE</NeonButton>
+                    <ShoppingBag size={64} strokeWidth={1} className="text-gray-300" />
+                    <p className="text-3xl font-display text-gray-400 uppercase tracking-widest">Votre panier est vide</p>
+                    <Link href="/explorer" className="bg-black text-white px-12 py-5 font-display text-xl tracking-[0.2em] hover:opacity-80 transition-opacity">
+                        COMMENCER VOS ACHATS
                     </Link>
                 </motion.div>
             ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                    <div className="lg:col-span-2 space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-20">
+                    {/* Items List */}
+                    <div className="lg:col-span-2 space-y-12">
                         <AnimatePresence>
                             {cart.map((item, index) => (
                                 <motion.div 
                                     key={`${item.id}-${item.size}-${index}`}
                                     layout
-                                    initial={{ opacity: 0, x: -50 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: 50, scale: 0.9 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="flex flex-col sm:flex-row bg-jersey p-6 shadow-2xl border border-white/5 gap-6 relative group"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="flex flex-col sm:flex-row pb-12 border-b border-gray-100 gap-8 relative items-center sm:items-start"
                                 >
-                                    <div className="w-full sm:w-40 h-48 bg-dark/50 flex-shrink-0 flex items-center justify-center p-4 border border-white/5">
-                                        <img src={item.image || 'https://via.placeholder.com/150'} alt={item.name} className="max-w-full max-h-full object-contain filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]" />
+                                    <div className="w-48 h-60 bg-brand-grey flex-shrink-0 flex items-center justify-center p-6">
+                                        <img src={item.image || 'https://via.placeholder.com/200/F5F5F5/000?text=IMG'} alt={item.name} className="max-w-full max-h-full object-contain mix-blend-multiply" />
                                     </div>
-                                    <div className="flex-1 flex flex-col justify-center">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <h3 className="font-display font-black text-3xl text-white leading-none pr-4">{item.name}</h3>
-                                            <button onClick={() => removeItem(index)} className="text-gray-500 hover:text-red-500 p-2 hover:bg-red-500/10 transition" title="Supprimer">
-                                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    <div className="flex-1 flex flex-col pt-2 w-full">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div>
+                                                <h3 className="font-display font-black text-3xl text-black leading-none uppercase tracking-wider">{item.name}</h3>
+                                                <p className="text-xs font-display text-gray-400 mt-2 tracking-[0.3em] uppercase">Taille: {item.size}</p>
+                                            </div>
+                                            <button onClick={() => removeItem(index)} className="text-gray-300 hover:text-black transition-colors">
+                                                <Trash2 size={24} strokeWidth={1.5} />
                                             </button>
                                         </div>
-                                        <div className="flex gap-4 items-center mb-4">
-                                            <span className="text-sm font-display uppercase tracking-widest bg-white/10 text-white px-3 py-1">TAILLE: {item.size}</span>
-                                        </div>
+                                        
                                         {item.hasFlockage && (
-                                            <p className="text-sm font-display uppercase tracking-widest bg-dark border border-white/10 text-white px-4 py-2 inline-flex flex-wrap gap-2 w-fit mb-4">
-                                                <span className="text-gray-400">FLOCAGE:</span>
-                                                <span className="text-pitch">{item.flockageText}</span>
-                                                <span className="text-pitch/50 ml-1">+{FLOCKAGE_PRICE}F</span>
+                                            <p className="text-xs font-display uppercase tracking-widest bg-gray-50 text-black px-4 py-3 w-fit mb-6">
+                                                Personnalisation: <span className="font-bold">{item.flockageText}</span>
                                             </p>
                                         )}
-                                        <div className="flex justify-between items-end mt-auto pt-4 border-t border-white/10">
-                                            <div className="flex items-center bg-dark p-1 border border-white/10">
-                                                <button onClick={() => updateQuantity(index, item.quantity - 1)} className="w-10 h-10 flex items-center justify-center font-display text-2xl text-gray-500 hover:text-white bg-jersey transition">-</button>
-                                                <span className="w-12 text-center font-display text-2xl">{item.quantity}</span>
-                                                <button onClick={() => updateQuantity(index, item.quantity + 1)} className="w-10 h-10 flex items-center justify-center font-display text-2xl text-gray-500 hover:text-white bg-jersey transition">+</button>
+
+                                        <div className="flex justify-between items-center mt-auto">
+                                            <div className="flex items-center border border-gray-100 p-1">
+                                                <button onClick={() => updateQuantity(index, item.quantity - 1)} className="w-10 h-10 flex items-center justify-center hover:bg-gray-50"><Minus size={16}/></button>
+                                                <span className="w-10 text-center font-display text-xl">{item.quantity}</span>
+                                                <button onClick={() => updateQuantity(index, item.quantity + 1)} className="w-10 h-10 flex items-center justify-center hover:bg-gray-50"><Plus size={16}/></button>
                                             </div>
                                             <div className="text-right">
-                                                <p className="font-display text-gold text-3xl tracking-widest"><AnimatedCounter value={item.price * item.quantity} /> F</p>
+                                                <p className="font-display text-2xl tracking-tighter">{(item.price * item.quantity).toLocaleString()} F</p>
                                             </div>
                                         </div>
                                     </div>
@@ -173,56 +157,53 @@ export default function CartPage() {
                         </AnimatePresence>
                     </div>
                     
-                    <div className="bg-jersey border border-white/10 text-white p-8 h-fit sticky top-28 shadow-2xl">
-                        <h2 className="text-3xl font-display mb-8 border-b border-white/10 pb-6 uppercase tracking-widest">RÉSUMÉ</h2>
+                    {/* Summary Sidebar */}
+                    <div className="bg-white border border-gray-100 p-10 h-fit sticky top-32 shadow-sm">
+                        <h2 className="text-3xl font-display mb-10 border-b border-gray-50 pb-6 uppercase tracking-widest">RÉSUMÉ</h2>
                         
-                        <div className="space-y-4 mb-8 pb-8 border-b border-white/10 font-body text-xl tracking-widest uppercase">
-                            <div className="flex justify-between">
-                                <span className="text-gray-400">MAILLOTS</span>
-                                <span><AnimatedCounter value={subtotal} /> F</span>
+                        <div className="space-y-6 mb-10 pb-10 border-b border-gray-50 font-body text-base tracking-widest uppercase">
+                            <div className="flex justify-between text-gray-400">
+                                <span>SOUS-TOTAL</span>
+                                <span className="text-black">{subtotal.toLocaleString()} F</span>
                             </div>
                             {totalFlockage > 0 && (
-                                <div className="flex justify-between text-pitch">
-                                    <span>FLOCAGE</span>
-                                    <span>+<AnimatedCounter value={totalFlockage} /> F</span>
+                                <div className="flex justify-between text-gray-400">
+                                    <span>PERSONNALISATION</span>
+                                    <span className="text-black">+{totalFlockage.toLocaleString()} F</span>
                                 </div>
                             )}
-                            <div className="flex justify-between">
-                                <span className="text-gray-400">LIVRAISON</span>
-                                <span className="text-pitch font-bold">OFFERTE</span>
+                            <div className="flex justify-between text-gray-400">
+                                <span>LIVRAISON</span>
+                                <span className="text-black font-bold">OFFERTE</span>
                             </div>
                         </div>
 
-                        <div className="flex justify-between items-center mb-10">
-                            <span className="font-display text-gray-400 text-2xl uppercase tracking-widest">TOTAL</span>
-                            <span className="font-display text-5xl text-pitch leading-none drop-shadow-[0_0_10px_rgba(0,255,135,0.4)]">
-                                <AnimatedCounter value={total} /> F
+                        <div className="flex justify-between items-center mb-12">
+                            <span className="font-display text-gray-400 text-xl uppercase tracking-widest">TOTAL</span>
+                            <span className="font-display text-5xl text-black tracking-tighter">
+                                {total.toLocaleString()} F
                             </span>
                         </div>
 
-                        <form onSubmit={submitOrder} className="space-y-6">
-                            <div>
-                                <label className="block text-sm font-display text-gray-400 uppercase tracking-widest mb-2">NOM COMPLET *</label>
-                                <input required type="text" value={name} onChange={e => setName(e.target.value)} className="w-full px-5 py-4 border-2 border-white/10 bg-dark text-white focus:outline-none focus:border-pitch font-body placeholder-gray-600 transition-colors" placeholder="EX: SALIOU DIALLO" />
+                        <form onSubmit={submitOrder} className="space-y-8">
+                            <div className="space-y-1">
+                                <label className="block text-[10px] font-display text-gray-400 uppercase tracking-[0.3em] font-bold">NOM COMPLET</label>
+                                <input required type="text" value={name} onChange={e => setName(e.target.value)} className="w-full px-0 py-4 border-b border-gray-100 bg-white text-black focus:outline-none focus:border-black font-body placeholder:text-gray-200 transition-colors uppercase tracking-widest" placeholder="EX: SALIOU DIALLO" />
                             </div>
-                            <div>
-                                <label className="block text-sm font-display text-gray-400 uppercase tracking-widest mb-2">WHATSAPP *</label>
-                                <input required type="tel" minLength={8} value={phone} onChange={e => setPhone(e.target.value)} className="w-full px-5 py-4 border-2 border-white/10 bg-dark text-white focus:outline-none focus:border-pitch font-body placeholder-gray-600 transition-colors" placeholder="+221 ..." />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-display text-gray-400 uppercase tracking-widest mb-2">EMAIL (OPTIONNEL)</label>
-                                <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full px-5 py-4 border-2 border-white/10 bg-dark text-white focus:outline-none focus:border-pitch font-body placeholder-gray-600 transition-colors" placeholder="CONTACT@..." />
+                            <div className="space-y-1">
+                                <label className="block text-[10px] font-display text-gray-400 uppercase tracking-[0.3em] font-bold">WHATSAPP</label>
+                                <input required type="tel" minLength={8} value={phone} onChange={e => setPhone(e.target.value)} className="w-full px-0 py-4 border-b border-gray-100 bg-white text-black focus:outline-none focus:border-black font-body placeholder:text-gray-200 transition-colors tracking-widest" placeholder="+221 ..." />
                             </div>
                             
-                            <div className="pt-6">
-                                <NeonButton 
-                                    className="w-full"
+                            <div className="pt-8">
+                                <button 
+                                    className={`w-full py-6 font-display text-xl tracking-[0.2em] transition-all uppercase ${loading ? 'bg-gray-100 text-gray-400' : 'bg-black text-white hover:opacity-80'}`}
                                     type="submit" 
                                     disabled={loading}
                                 >
-                                    {loading ? 'VALIDATION...' : 'COMMANDER SUR WHATSAPP'}
-                                </NeonButton>
-                                <p className="text-center text-xs text-gray-500 font-display tracking-widest uppercase mt-4">PAIEMENT SÉCURISÉ À LA LIVRAISON</p>
+                                    {loading ? 'ANALYSANT...' : 'VALIDER LA COMMANDE'}
+                                </button>
+                                <p className="text-center text-[10px] text-gray-300 font-display tracking-widest uppercase mt-6">PAIEMENT SÉCURISÉ À LA RÉCEPTION</p>
                             </div>
                         </form>
                     </div>

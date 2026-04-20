@@ -1,128 +1,68 @@
 'use client';
 import Link from 'next/link';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import AnimatedCounter from './ui/AnimatedCounter';
+import { motion } from 'framer-motion';
 
 export default function ProductCard({ product }: { product: any }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
-  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
-
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["12.5deg", "-12.5deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-12.5deg", "12.5deg"]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
-    x.set(xPct);
-    y.set(yPct);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
   if (!product) return null;
 
-  // Numéro factice basé sur la longueur du nom pour garder le même nombre
-  const bgNumber = (product.name.length % 99) || 10;
-
   return (
-    <Link href={`/products/${product.slug}`} className="group relative block w-full outline-none font-body py-4 z-10 hover:z-40 perspective-1000">
-      <motion.div
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          rotateY,
-          rotateX,
-          transformStyle: "preserve-3d",
-        }}
-        className="relative rounded-sm overflow-hidden bg-jersey border border-white/10 hover:border-pitch/50 shadow-2xl transition-colors duration-500"
-      >
-        {/* Giant Number Background */}
-        <div 
-          className="absolute inset-0 flex items-center justify-center font-display text-[12rem] text-white opacity-5 pointer-events-none z-0"
-          style={{ transform: "translateZ(-30px)" }}
-        >
-          {bgNumber}
-        </div>
-
-        {/* Image Container */}
-        <div className="relative aspect-[3/4] w-full p-6 flex flex-col items-center justify-center z-10" style={{ transform: "translateZ(40px)" }}>
-          <img 
-            src={product.images?.[0] || 'https://via.placeholder.com/300x400'} 
+    <Link href={`/products/${product.slug}`} className="group block w-full outline-none font-body">
+      <div className="relative overflow-hidden">
+        {/* Image Container Castore Style */}
+        <div className="relative aspect-[4/5] w-full bg-brand-grey flex flex-col items-center justify-center overflow-hidden transition-all duration-700">
+          <motion.img 
+            initial={{ opacity: 0, scale: 1 }}
+            animate={{ opacity: 1 }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            src={product.images?.[0] || 'https://via.placeholder.com/600x750/F5F5F5/000000?text=MAILLOT'} 
             alt={product.name}
-            className="w-full h-full object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-110 transition-transform duration-700 ease-out"
+            className="w-full h-full object-contain p-8 md:p-12 mix-blend-multiply"
           />
           
+          {/* Quick Add Overlay */}
+          <div className="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500 hidden md:block">
+            <div className="w-full bg-black text-white text-center font-display text-sm tracking-[0.2em] py-4 uppercase">
+                ACHETER
+            </div>
+          </div>
+
           {/* Badges */}
-          <div className="absolute top-4 left-4 flex flex-col gap-2">
+          <div className="absolute top-4 left-4 flex flex-col gap-1">
               {product.isNew && (
-                  <span className="bg-pitch text-dark text-lg font-display tracking-widest px-3 py-1 shadow-[0_0_15px_rgba(0,255,135,0.4)]">
-                      NOUVEAU
-                  </span>
-              )}
-              {product.isPromo && (
-                  <span className="bg-red-600 text-white text-lg font-display tracking-widest px-3 py-1 shadow-[0_0_15px_rgba(220,38,38,0.5)] animate-[flicker_3s_infinite]">
-                      TOP VENTE
+                  <span className="bg-black text-white text-[10px] font-display tracking-widest px-2 py-1 uppercase">
+                      NOUVEAUTÉ
                   </span>
               )}
           </div>
           
-          {/* Stock Badge */}
+          {/* Stock Overlay */}
           {!product.inStock && (
-              <div className="absolute inset-0 bg-dark/80 backdrop-blur-sm flex items-center justify-center">
-                  <span className="text-red-500 font-display text-5xl uppercase tracking-widest border-4 border-red-500 px-6 py-2 rotate-[-12deg]">
-                      SOLD OUT
+              <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
+                  <span className="text-black font-display text-2xl tracking-[0.4em] border-y border-black px-4 py-2">
+                      EPUISÉ
                   </span>
               </div>
           )}
         </div>
         
-        {/* Footer Info */}
-        <div className="p-6 relative bg-dark/95 z-20 border-t border-white/10 transition-transform duration-300" style={{ transform: "translateZ(20px)" }}>
-          <div className="flex justify-between items-start mb-2">
-            <div>
-              {product.team && (
-                  <p className="text-sm font-bold text-pitch uppercase tracking-[0.2em] mb-1">{product.team}</p>
-              )}
-              <h3 className="font-display text-3xl text-white leading-none group-hover:text-pitch transition-colors">
-                  {product.name}
-              </h3>
-            </div>
-            
-            <div className="flex flex-col items-end gap-1">
-                <div className="text-2xl font-display text-gold flex items-center tracking-wider">
-                    <AnimatedCounter value={product.price} /> <span className="ml-1">F</span>
-                </div>
-                {product.originalPrice && product.isPromo && (
-                    <p className="text-sm font-body text-gray-500 line-through">
-                        {product.originalPrice.toLocaleString()} F
-                    </p>
+        {/* Info Area */}
+        <div className="pt-6 pb-2">
+            <div className="flex flex-col gap-1">
+                {product.team && (
+                    <p className="text-[10px] md:text-xs font-display text-gray-400 tracking-[0.3em] uppercase">{product.team}</p>
                 )}
+                <div className="flex justify-between items-baseline gap-4">
+                  <h3 className="font-display text-xl md:text-2xl text-black leading-none tracking-wider uppercase group-hover:opacity-60 transition-opacity">
+                      {product.name}
+                  </h3>
+                  <div className="text-xl md:text-2xl font-display text-black tracking-wider whitespace-nowrap">
+                    {product.price.toLocaleString()} F
+                  </div>
+                </div>
             </div>
-          </div>
-          
-          {/* Hover Button Overlay */}
-          <div className="mt-4 md:absolute md:-bottom-16 md:left-0 w-full md:px-6 transition-all duration-300 md:group-hover:bottom-6 md:opacity-0 md:group-hover:opacity-100 hidden md:block">
-            <div className="w-full bg-pitch text-dark flex items-center justify-center font-display text-xl tracking-widest py-3 uppercase shadow-[0_0_15px_rgba(0,255,135,0.4)] pointer-events-none">
-                AJOUTER AU PANIER
-            </div>
-          </div>
-          {/* Version Mobile toujours visible */}
-          <div className="mt-4 block md:hidden w-full bg-pitch text-dark text-center font-display text-xl tracking-widest py-3 uppercase shadow-[0_0_15px_rgba(0,255,135,0.4)]">
-                VOIR L'ARTICLE
-          </div>
         </div>
-      </motion.div>
+      </div>
     </Link>
   );
 }

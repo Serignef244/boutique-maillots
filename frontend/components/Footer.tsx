@@ -4,28 +4,24 @@ import { ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-dark text-white pt-20 pb-10 border-t-4 border-pitch relative overflow-hidden">
-      {/* Background Decorative Element */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-pitch/5 blur-[120px] pointer-events-none rounded-full" />
-      
-      <div className="container mx-auto px-4 max-w-7xl relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+    <footer className="bg-white text-black py-24 border-t border-gray-100 relative">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
           
           {/* Brand Info */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             <Link href="/" className="font-display font-black text-4xl tracking-tighter block">
-              <span className="text-pitch">JERSEY</span>
-              <span className="text-white ml-2">SHORE</span>
+              JERSEY SHORE
             </Link>
             <p className="font-body text-gray-500 text-lg uppercase tracking-wider leading-relaxed">
-              La destination ultime pour les maillots de football d'exception. Performance, style et authenticité scellés dans chaque fibre.
+              Vêtements de sport de précision haute performance. Conçus pour l'excellence athlétique.
             </p>
-            <div className="flex gap-5">
+            <div className="flex gap-8">
               {['FB', 'X', 'IG', 'TT'].map((social) => (
                 <a 
                   key={social} 
                   href="#" 
-                  className="w-12 h-12 flex items-center justify-center border border-white/10 text-white font-display text-xl transition-all hover:bg-pitch hover:text-dark hover:border-pitch hover:shadow-[0_0_15px_rgba(0,255,135,0.4)]"
+                  className="font-display text-xl transition-opacity hover:opacity-50"
                 >
                   {social}
                 </a>
@@ -35,83 +31,81 @@ export default function Footer() {
 
           {/* Nav Links */}
           <div>
-            <h4 className="font-display text-2xl mb-8 tracking-widest text-white">CATALOGUE</h4>
-            <ul className="space-y-4 font-body text-lg text-gray-500 uppercase tracking-widest">
-              <li><Link href="/explorer" className="hover:text-pitch transition-colors">Collection Complète</Link></li>
-              <li><Link href="/equipe/senegal" className="hover:text-pitch transition-colors">Ferveur Lions</Link></li>
-              <li><Link href="/equipe/psg" className="hover:text-pitch transition-colors">Boutique Paris</Link></li>
-              <li><Link href="/explorer?promo=true" className="hover:text-pitch transition-colors">Offres Limitées</Link></li>
+            <h4 className="font-display text-2xl mb-8 tracking-widest text-black">CATALOGUE</h4>
+            <ul className="space-y-4 font-body text-base text-gray-500 uppercase tracking-[0.2em]">
+              <li><Link href="/explorer" className="hover:text-black transition-colors">TOUS LES PRODUITS</Link></li>
+              <li><Link href="/equipe/senegal" className="hover:text-black transition-colors">SÉNÉGAL</Link></li>
+              <li><Link href="/equipe/psg" className="hover:text-black transition-colors">PSG SHOP</Link></li>
+              <li><Link href="/explorer?promo=true" className="hover:text-black transition-colors">OFFRES SPÉCIALES</Link></li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h4 className="font-display text-2xl mb-8 tracking-widest text-white">ASSISTANCE</h4>
-            <ul className="space-y-4 font-body text-lg text-gray-500 uppercase tracking-widest">
-              <li><Link href="#" className="hover:text-pitch transition-colors">Contact Expert</Link></li>
-              <li><Link href="#" className="hover:text-pitch transition-colors">Guide des Tailles</Link></li>
-              <li><Link href="#" className="hover:text-pitch transition-colors">Suivi Livraison</Link></li>
-              <li><Link href="#" className="hover:text-pitch transition-colors">Mentions Légales</Link></li>
+            <h4 className="font-display text-2xl mb-8 tracking-widest text-black">ASSISTANCE</h4>
+            <ul className="space-y-4 font-body text-base text-gray-500 uppercase tracking-[0.2em]">
+              <li><Link href="#" className="hover:text-black transition-colors">CONTACT NOUS</Link></li>
+              <li><Link href="#" className="hover:text-black transition-colors">GUIDE DES TAILLES</Link></li>
+              <li><Link href="#" className="hover:text-black transition-colors">SUIVI DE COMMANDE</Link></li>
+              <li><Link href="#" className="hover:text-black transition-colors">LIVRAISONS & RETOURS</Link></li>
             </ul>
           </div>
 
           {/* Newsletter */}
           <div>
-            <h4 className="font-display text-2xl mb-8 tracking-widest text-white">REJOINDRE L'ÉLITE</h4>
-            <p className="font-body text-gray-500 text-lg mb-6 uppercase tracking-wider">
-              Inscris-toi pour recevoir les drops exclusifs et les alertes de réassort.
+            <h4 className="font-display text-2xl mb-8 tracking-widest text-black">NEWSLETTER</h4>
+            <p className="font-body text-gray-500 text-base mb-6 uppercase tracking-wider">
+              Rejoignez la communauté pour recevoir les derniers drops et exclusivités.
             </p>
-            <form className="flex group" onSubmit={e => e.preventDefault()}>
+            <form className="flex flex-col gap-4" onSubmit={e => e.preventDefault()}>
               <input 
                 type="email" 
-                placeholder="TON EMAIL" 
-                className="bg-jersey border border-white/10 text-white px-5 py-4 w-full focus:outline-none focus:border-pitch font-body text-lg transition-colors placeholder:text-gray-700" 
+                placeholder="VOTRE ADRESSE EMAIL" 
+                className="bg-brand-grey border-0 text-black px-5 py-4 w-full focus:ring-1 focus:ring-black font-body text-lg transition-colors placeholder:text-gray-400" 
               />
               <button 
                 type="submit" 
-                className="bg-pitch text-dark font-display text-2xl px-6 hover:shadow-[0_0_20px_rgba(0,255,135,0.4)] transition-all"
+                className="bg-black text-white font-display text-xl py-4 hover:opacity-80 transition-opacity"
               >
-                JOIN
+                S'INSCRIRE
               </button>
             </form>
           </div>
 
         </div>
 
-        {/* Reassurance Banner */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 py-10 border-y border-white/5 mb-10">
-          <div className="flex items-center gap-6 group">
-            <div className="w-16 h-16 flex items-center justify-center bg-jersey border border-white/5 group-hover:border-pitch transition-colors">
-              <ShieldCheck className="text-pitch" size={36} />
-            </div>
+        {/* Reassurance Banner Castore Style */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-16 py-12 border-y border-gray-100 mb-12">
+          <div className="flex flex-col items-center text-center gap-4">
+            <ShieldCheck size={32} strokeWidth={1} />
             <div>
-              <p className="font-display text-2xl tracking-widest">GARANTIE PRO</p>
-              <p className="font-body text-sm text-gray-500 uppercase">PAIEMENT 100% SÉCURISÉ</p>
+              <p className="font-display text-xl tracking-widest">PAIEMENTS SÉCURISÉS</p>
+              <p className="font-body text-xs text-gray-400 uppercase tracking-widest">TRANSACTIONS CHIFFRÉES SSL</p>
             </div>
           </div>
-          <div className="flex items-center gap-6 group">
-            <div className="w-16 h-16 flex items-center justify-center bg-jersey border border-white/5 group-hover:border-pitch transition-colors">
-              <Truck className="text-pitch" size={36} />
-            </div>
+          <div className="flex flex-col items-center text-center gap-4">
+            <Truck size={32} strokeWidth={1} />
             <div>
-              <p className="font-display text-2xl tracking-widest">VITESSE ÉCLAIR</p>
-              <p className="font-body text-sm text-gray-500 uppercase">LIVRAISON PARTOUT AU SÉNÉGAL</p>
+              <p className="font-display text-xl tracking-widest">LIVRAISON RAPIDE</p>
+              <p className="font-body text-xs text-gray-400 uppercase tracking-widest">SÉNÉGAL & INTERNATIONAL</p>
             </div>
           </div>
-          <div className="flex items-center gap-6 group">
-            <div className="w-16 h-16 flex items-center justify-center bg-jersey border border-white/5 group-hover:border-pitch transition-colors">
-              <RotateCcw className="text-pitch" size={36} />
-            </div>
+          <div className="flex flex-col items-center text-center gap-4">
+            <RotateCcw size={32} strokeWidth={1} />
             <div>
-              <p className="font-display text-2xl tracking-widest">SATISFACTION</p>
-              <p className="font-body text-sm text-gray-500 uppercase">RETOURS FLEXIBLES 14J</p>
+              <p className="font-display text-xl tracking-widest">RETOURS FACILES</p>
+              <p className="font-body text-xs text-gray-400 uppercase tracking-widest">SOUS 14 JOURS</p>
             </div>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="text-center font-display text-gray-600 text-lg tracking-[0.4em] uppercase">
-          &copy; {new Date().getFullYear()} JERSEY SHORE • EXCELLENCE ATHLÉTIQUE
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 font-display text-gray-400 text-sm tracking-[0.2em] uppercase">
+          <div>&copy; {new Date().getFullYear()} JERSEY SHORE</div>
+          <div className="flex gap-8">
+            <Link href="#" className="hover:text-black">CONFIDENTIALITÉ</Link>
+            <Link href="#" className="hover:text-black">CGV</Link>
+          </div>
         </div>
       </div>
     </footer>

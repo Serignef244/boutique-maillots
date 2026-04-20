@@ -1,111 +1,118 @@
 'use client';
 import Link from 'next/link';
-import { Search, Menu, X, User } from 'lucide-react';
+import { Search, Menu, X, User, ShoppingBag } from 'lucide-react';
 import CartIcon from './CartIcon';
 import SearchBar from './SearchBar';
 import { useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
 
-    const { scrollY } = useScroll();
-    const backgroundColor = useTransform(
-        scrollY,
-        [0, 100],
-        ['rgba(10, 10, 10, 0)', 'rgba(10, 10, 10, 0.95)']
-    );
-    const backdropFilter = useTransform(
-        scrollY,
-        [0, 100],
-        ['blur(0px)', 'blur(8px)']
-    );
-    const borderBottomColor = useTransform(
-        scrollY,
-        [0, 100],
-        ['rgba(0, 255, 135, 0)', 'rgba(0, 255, 135, 0.2)']
-    );
-
     return (
-        <motion.header 
-            style={{ backgroundColor, backdropFilter, borderBottomColor }}
-            className="fixed top-0 w-full z-50 border-b transition-all duration-300"
-        >
-            {/* Top Bar Promo */}
-            <div className="bg-pitch text-dark text-xs font-display py-1.5 text-center tracking-[0.3em] uppercase hidden md:block">
-                LIVRAISON OFFERTE PARTOUT AU SÉNÉGAL DÈS 50.000 FCFA
+        <header className="fixed top-0 w-full z-50 bg-white border-b border-gray-100 transition-all duration-300">
+            {/* Top Bar Promo Castore Style */}
+            <div className="bg-black text-white text-[10px] md:text-xs font-display py-2 text-center tracking-[0.3em] uppercase">
+                LIVRAISON OFFERTE DÈS 50.000 FCFA | RETOURS SOUS 14 JOURS
             </div>
             
             <div className="container mx-auto px-4 lg:px-8">
-                <div className="flex items-center justify-between h-20 md:h-24">
+                <div className="grid grid-cols-3 items-center h-20 md:h-24">
                     
-                    {/* Mobile Menu Toggle */}
-                    <button className="lg:hidden p-2 text-white hover:text-pitch transition-colors" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                        {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-                    </button>
+                    {/* Left: Mobile Menu & Desktop Nav */}
+                    <div className="flex items-center">
+                        <button 
+                            className="lg:hidden p-2 text-black hover:opacity-70 transition-opacity" 
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        >
+                            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        </button>
+                        
+                        <nav className="hidden lg:flex items-center gap-8 font-display text-sm tracking-[0.2em] text-black uppercase">
+                            <Link href="/explorer" className="hover:opacity-60 transition-opacity">COLLECTION</Link>
+                            <Link href="/equipe/senegal" className="hover:opacity-60 transition-opacity">SÉNÉGAL</Link>
+                            <Link href="/equipe/psg" className="hover:opacity-60 transition-opacity">PSG</Link>
+                        </nav>
+                    </div>
 
-                    {/* Logo */}
-                    <div className="flex-shrink-0 flex items-center">
-                        <Link href="/" className="font-display font-black text-4xl md:text-5xl tracking-tighter flex items-center">
-                            <span className="text-pitch drop-shadow-[0_0_10px_rgba(0,255,135,0.4)]">JERSEY</span>
-                            <span className="text-white ml-2">SHORE</span>
+                    {/* Center: Logo */}
+                    <div className="flex justify-center">
+                        <Link href="/" className="font-display font-black text-3xl md:text-5xl tracking-tighter text-black">
+                            JERSEY SHORE
                         </Link>
                     </div>
 
-                    {/* Desktop Navigation */}
-                    <nav className="hidden lg:flex items-center gap-10">
-                        <Link href="/explorer" className="text-base font-body tracking-[0.2em] text-white uppercase hover:text-pitch hover:drop-shadow-[0_0_8px_rgba(0,255,135,0.5)] transition-all">COLLECTION</Link>
-                        <Link href="/equipe/senegal" className="text-base font-body tracking-[0.2em] text-white uppercase hover:text-pitch hover:drop-shadow-[0_0_8px_rgba(0,255,135,0.5)] transition-all">SÉNÉGAL</Link>
-                        <Link href="/equipe/psg" className="text-base font-body tracking-[0.2em] text-white uppercase hover:text-pitch hover:drop-shadow-[0_0_8px_rgba(0,255,135,0.5)] transition-all">PSG</Link>
-                        <Link href="/equipe/real-madrid" className="text-base font-body tracking-[0.2em] text-white uppercase hover:text-pitch hover:drop-shadow-[0_0_8px_rgba(0,255,135,0.5)] transition-all">REAL MADRID</Link>
-                    </nav>
-
-                    {/* Right Icons: Search & Cart */}
-                    <div className="flex items-center gap-6">
-                        
-                        {/* Search Desktop */}
-                        <div className="hidden lg:block w-64 relative">
-                            <SearchBar />
-                        </div>
-
-                        {/* Search Mobile Toggle */}
-                        <button className="lg:hidden p-2 text-white hover:text-pitch transition-colors" onClick={() => setSearchOpen(!searchOpen)}>
-                            <Search size={24} />
+                    {/* Right: Search, User, Cart */}
+                    <div className="flex items-center justify-end gap-2 md:gap-6">
+                        <button 
+                            className="p-2 text-black hover:opacity-60 transition-opacity" 
+                            onClick={() => setSearchOpen(!searchOpen)}
+                        >
+                            <Search size={22} />
                         </button>
 
-                        {/* Admin Link / User */}
-                        <Link href="/admin" className="hidden sm:flex text-gray-400 hover:text-pitch transition-colors">
-                            <User size={24} />
+                        <Link href="/admin" className="hidden sm:block p-2 text-black hover:opacity-60 transition-opacity">
+                            <User size={22} />
                         </Link>
 
-                        {/* Cart */}
-                        <div className="flex items-center px-2 py-2 rounded-full border border-white/20 hover:border-pitch hover:shadow-[0_0_15px_rgba(0,255,135,0.3)] transition-all cursor-pointer bg-black/50 text-white">
+                        <div className="relative p-2 text-black hover:opacity-60 transition-opacity cursor-pointer">
                             <CartIcon />
                         </div>
                     </div>
                 </div>
-
-                {/* Mobile Search Bar Dropdown */}
-                {searchOpen && (
-                    <div className="lg:hidden pb-4">
-                        <SearchBar />
-                    </div>
-                )}
             </div>
 
+            {/* Expandable Search Bar */}
+            <AnimatePresence>
+                {searchOpen && (
+                    <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="bg-white border-b border-gray-100 overflow-hidden"
+                    >
+                        <div className="container mx-auto px-4 py-8 flex flex-col items-center">
+                            <div className="w-full max-w-3xl">
+                                <SearchBar />
+                            </div>
+                            <button 
+                                onClick={() => setSearchOpen(false)}
+                                className="mt-4 font-display text-xs tracking-widest text-gray-400 hover:text-black uppercase"
+                            >
+                                FERMER
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Mobile Menu Dropdown */}
-            {mobileMenuOpen && (
-                <div className="lg:hidden absolute top-full left-0 w-full bg-dark/95 backdrop-blur-md border-b border-white/10 shadow-2xl overflow-hidden">
-                    <nav className="flex flex-col p-6 gap-6 font-display text-2xl tracking-widest text-center">
-                        <Link href="/explorer" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-pitch">COLLECTION</Link>
-                        <Link href="/equipe/senegal" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-pitch">SÉNÉGAL</Link>
-                        <Link href="/equipe/psg" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-pitch">PSG</Link>
-                        <Link href="/equipe/real-madrid" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-pitch">REAL MADRID</Link>
-                        <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="text-pitch mt-4 border-t border-white/10 pt-4">ADMINISTRATION</Link>
-                    </nav>
-                </div>
-            )}
-        </motion.header>
+            <AnimatePresence>
+                {mobileMenuOpen && (
+                    <motion.div 
+                        initial={{ x: '-100%' }}
+                        animate={{ x: 0 }}
+                        exit={{ x: '-100%' }}
+                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                        className="lg:hidden fixed top-0 left-0 w-full h-screen bg-white z-[60] flex flex-col p-8"
+                    >
+                        <div className="flex justify-between items-center mb-16">
+                            <span className="font-display font-black text-2xl tracking-tighter">JERSEY SHORE</span>
+                            <button onClick={() => setMobileMenuOpen(false)}><X size={32} /></button>
+                        </div>
+                        <nav className="flex flex-col gap-10 font-display text-4xl tracking-widest uppercase">
+                            <Link href="/explorer" onClick={() => setMobileMenuOpen(false)}>COLLECTION</Link>
+                            <Link href="/equipe/senegal" onClick={() => setMobileMenuOpen(false)}>SÉNÉGAL</Link>
+                            <Link href="/equipe/psg" onClick={() => setMobileMenuOpen(false)}>PSG</Link>
+                            <Link href="/equipe/real-madrid" onClick={() => setMobileMenuOpen(false)}>REAL MADRID</Link>
+                        </nav>
+                        <div className="mt-auto border-t pt-8">
+                            <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="font-display text-xl tracking-widest text-gray-400 uppercase">ADMINISTRATION</Link>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </header>
     );
 }

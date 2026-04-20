@@ -55,30 +55,30 @@ export default function ExplorerPage() {
     });
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-12 min-h-screen text-white">
-            <div className="flex flex-col lg:flex-row gap-12 mt-10">
+        <div className="max-w-7xl mx-auto px-4 py-24 min-h-screen text-black bg-white">
+            <div className="flex flex-col lg:flex-row gap-16 mt-16">
                 {/* Colonne Filtres */}
                 <Filters activeFilters={activeFilters} onFilterChange={handleFilterChange} />
 
                 {/* Grille Produits */}
-                <div className="flex-1 w-full pb-20">
+                <div className="flex-1 w-full pb-32">
                     
                     {/* En-tête de recherche/résultats */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 gap-6 border-b border-white/5 pb-8">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-16 gap-8 border-b border-gray-100 pb-12">
                         <div>
-                            <h1 className="font-display font-black text-6xl md:text-8xl text-white tracking-widest uppercase leading-none">
-                                <span className="text-pitch">VOTRE</span> COLLECTION
+                            <h1 className="font-display font-black text-6xl md:text-8xl text-black tracking-tighter uppercase leading-none">
+                                TOUTE LA COLLECTION
                             </h1>
-                            <p className="font-body text-gray-500 mt-4 text-xl tracking-[0.2em] uppercase">
+                            <p className="font-body text-gray-400 mt-4 text-base tracking-[0.3em] uppercase">
                                 {filteredProducts.length} MODÈLE{filteredProducts.length > 1 ? 'S' : ''} DISPONIBLE{filteredProducts.length > 1 ? 'S' : ''}
                             </p>
                         </div>
                     </div>
 
                     {loading ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
                             {[1, 2, 3, 4, 5, 6].map(n => (
-                                <div key={n} className="aspect-[4/5] bg-jersey animate-pulse border border-white/5"></div>
+                                <div key={n} className="aspect-[4/5] bg-brand-grey animate-pulse"></div>
                             ))}
                         </div>
                     ) : (
@@ -86,16 +86,16 @@ export default function ExplorerPage() {
                             {filteredProducts.length > 0 ? (
                                 <motion.div 
                                     layout
-                                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+                                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16"
                                 >
                                     {filteredProducts.map(product => (
                                         <motion.div
                                             key={product.id}
                                             layout
-                                            initial={{ opacity: 0, scale: 0.9 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            exit={{ opacity: 0, scale: 0.9 }}
-                                            transition={{ duration: 0.3 }}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.4 }}
                                         >
                                             <ProductCard product={product} />
                                         </motion.div>
@@ -105,14 +105,14 @@ export default function ExplorerPage() {
                                 <motion.div 
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    className="flex flex-col items-center justify-center py-32 bg-jersey border border-white/5"
+                                    className="flex flex-col items-center justify-center py-32 bg-brand-grey"
                                 >
-                                    <p className="text-3xl font-display text-gray-500 mb-8 tracking-[0.2em] uppercase text-center">Aucun maillot ne correspond</p>
+                                    <p className="text-2xl font-display text-gray-400 mb-8 tracking-[0.3em] uppercase text-center px-4">Aucun article ne correspond à vos filtres</p>
                                     <button 
                                         onClick={() => setActiveFilters({ teams: [], sizes: [], promoOnly: false, inStockOnly: false })} 
-                                        className="text-pitch font-display text-xl tracking-widest hover:underline uppercase"
+                                        className="bg-black text-white px-8 py-4 font-display text-base tracking-widest hover:opacity-80 transition-opacity uppercase"
                                     >
-                                        RÉINITIALISER LES FILTRES
+                                        RÉINITIALISER TOUT
                                     </button>
                                 </motion.div>
                             )}

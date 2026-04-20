@@ -1,9 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { dispatchCartUpdated, FLOCKAGE_PRICE } from '@/lib/cart';
-import { ShieldCheck } from 'lucide-react';
-import NeonButton from '@/components/ui/NeonButton';
-import AnimatedCounter from '@/components/ui/AnimatedCounter';
+import { ShieldCheck, Truck, RotateCcw, Minus, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ProductClientDetails({ product }: { product: any }) {
@@ -15,17 +13,13 @@ export default function ProductClientDetails({ product }: { product: any }) {
     const [flockageText, setFlockageText] = useState('');
     const [quantity, setQuantity] = useState(1);
     
-    // Pour la galerie d'images
-    const images = Array.isArray(product.images) && product.images.length > 0 ? product.images : ['https://via.placeholder.com/600/111111/00ff87?text=APER%C3%87U'];
+    const images = Array.isArray(product.images) && product.images.length > 0 ? product.images : ['https://via.placeholder.com/1000/F5F5F5/000000?text=MAILLOT'];
     const [mainImage, setMainImage] = useState(images[0]);
     
     const isButtonDisabled = !selectedSize || (hasFlockage && flockageText.trim() === '') || !product.inStock;
 
     const addToCart = () => {
-        if (!selectedSize) {
-            alert('Veuillez sélectionner une taille.');
-            return;
-        }
+        if (!selectedSize) return;
         
         const finalPrice = hasFlockage ? product.price + FLOCKAGE_PRICE : product.price;
 
@@ -42,7 +36,6 @@ export default function ProductClientDetails({ product }: { product: any }) {
         };
         
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-        
         const existingIndex = cart.findIndex((i: any) => 
             i.id === item.id && i.size === item.size && i.hasFlockage === item.hasFlockage && i.flockageText === item.flockageText
         );
@@ -58,75 +51,94 @@ export default function ProductClientDetails({ product }: { product: any }) {
     };
 
     return (
-        <div className="flex flex-col lg:flex-row gap-12 font-body pb-20 text-white min-h-[80vh]">
-            {/* Colonne de gauche : Galerie des images */}
-            <div className="lg:w-[55%] flex flex-col gap-4">
-                <div className="bg-jersey flex items-center justify-center p-8 rounded-none min-h-[500px] border border-white/5 relative overflow-hidden group shadow-[0_0_30px_rgba(0,0,0,0.8)]">
-                    <img src={mainImage} alt={product.name} className="max-w-full h-auto max-h-[600px] object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-700 ease-out" />
+        <div className="flex flex-col lg:flex-row gap-20 font-body pb-32 text-black min-h-screen bg-white">
+            {/* Left: Image Gallery */}
+            <div className="lg:w-[60%] flex flex-col gap-6">
+                <div className="bg-brand-grey flex items-center justify-center p-8 md:p-12 relative overflow-hidden group">
+                    <motion.img 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8 }}
+                        src={mainImage} 
+                        alt={product.name} 
+                        className="max-w-full h-auto max-h-[800px] object-contain mix-blend-multiply transition-transform duration-700 ease-out" 
+                    />
                     
-                    {/* Badges Fiche Produit */}
-                    <div className="absolute top-6 left-6 flex flex-col gap-2">
+                    {/* Badges */}
+                    <div className="absolute top-8 left-8 flex flex-col gap-2">
                         {product.isNew && (
-                            <span className="bg-pitch text-dark text-lg font-display tracking-widest px-4 py-1 shadow-[0_0_15px_rgba(0,255,135,0.4)]">
-                                NOUVEAU
+                            <span className="bg-black text-white text-[10px] font-display tracking-widest px-3 py-1 uppercase">
+                                NOUVEAUTÉ
                             </span>
                         )}
                         {product.isPromo && (
-                            <span className="bg-red-600 text-white text-lg font-display tracking-widest px-4 py-1 shadow-[0_0_15px_rgba(220,38,38,0.5)] animate-[flicker_3s_infinite]">
-                                PROMO
+                            <span className="bg-white text-black border border-black text-[10px] font-display tracking-widest px-3 py-1 uppercase">
+                                OFFRE SPÉCIALE
                             </span>
                         )}
                     </div>
                 </div>
                 
                 {images.length > 1 && (
-                    <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
+                    <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
                         {images.map((img: string, idx: number) => (
                             <button 
                                 key={idx} 
                                 onClick={() => setMainImage(img)}
-                                className={`w-28 h-28 rounded-none overflow-hidden flex-shrink-0 transition-all border ${
-                                    mainImage === img ? 'border-pitch opacity-100 shadow-[0_0_10px_rgba(0,255,135,0.3)]' : 'border-white/10 bg-jersey opacity-50 hover:opacity-100 block'
+                                className={`w-32 h-32 flex-shrink-0 transition-all border border-gray-100 bg-brand-grey p-2 ${
+                                    mainImage === img ? 'border-black' : 'opacity-60 hover:opacity-100'
                                 }`}
                             >
-                                <img src={img} alt={`Aperçu ${idx + 1}`} className="w-full h-full object-contain filter drop-shadow-md" />
+                                <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-contain mix-blend-multiply" />
                             </button>
                         ))}
                     </div>
                 )}
             </div>
             
-            {/* Colonne de droite : Détails techniques */}
-            <div className="lg:w-[45%] flex flex-col pt-4">
+            {/* Right: Product Info Sidebar */}
+            <div className="lg:w-[40%] flex flex-col sticky top-32 h-fit">
                 {product.team && (
-                    <div className="text-xl font-body text-pitch uppercase tracking-[0.3em] mb-2">{product.team} {product.season ? `- ${product.season}` : ''}</div>
+                    <div className="text-xs font-display text-gray-400 uppercase tracking-[0.4em] mb-4">
+                        {product.team} — {product.season || 'Collection Officielle'}
+                    </div>
                 )}
-                <h1 className="text-5xl md:text-7xl font-display font-black text-white mb-6 leading-none tracking-widest uppercase">{product.name}</h1>
                 
-                <div className="flex items-end gap-6 mb-8">
-                    <p className="text-5xl text-gold font-display tracking-widest"><AnimatedCounter value={product.price} /> F</p>
+                <h1 className="text-6xl md:text-8xl font-display font-black text-black mb-8 leading-[0.8] tracking-tighter uppercase whitespace-pre-line">
+                    {product.name}
+                </h1>
+                
+                <div className="flex items-baseline gap-6 mb-12">
+                    <p className="text-5xl font-display text-black tracking-tighter">
+                        {product.price.toLocaleString()} FCFA
+                    </p>
                     {product.originalPrice && product.isPromo && (
-                        <p className="text-2xl text-gray-500 font-body line-through mb-1.5">{product.originalPrice.toLocaleString()} F</p>
+                        <p className="text-xl text-gray-300 font-body line-through decoration-black/20">
+                            {product.originalPrice.toLocaleString()} FCFA
+                        </p>
                     )}
                 </div>
                 
-                <p className="text-gray-400 leading-relaxed mb-10 text-xl font-body uppercase tracking-wider">{product.description || 'Maillot de qualité professionnelle conçu avec des matériaux respirants de pointe.'}</p>
+                <p className="text-gray-500 leading-relaxed mb-12 text-lg font-body uppercase tracking-wider max-w-lg">
+                    {product.description || 'Conçu pour une performance athlétique supérieure. Tissu technique léger et respirant pour un confort optimal en mouvement.'}
+                </p>
                 
-                {/* Grille des tailles */}
-                <div className="mb-10">
-                    <div className="flex justify-between items-end mb-4">
-                        <span className="block text-lg font-display text-white uppercase tracking-widest">SÉLECTIONNEZ LA TAILLE <span className="text-pitch">*</span></span>
+                {/* Size Selector */}
+                <div className="mb-12">
+                    <div className="flex justify-between items-center mb-6">
+                        <span className="text-sm font-display text-black uppercase tracking-[0.2em] font-bold">CHOISIR LA TAILLE</span>
+                        <button className="text-[10px] font-display text-gray-400 underline tracking-widest uppercase">GUIDE DES TAILLES</button>
                     </div>
                     
-                    <div className="flex flex-wrap gap-4">
+                    <div className="grid grid-cols-5 gap-3">
                         {sizes.map((size: string) => (
                             <button 
                                 key={size}
                                 onClick={() => setSelectedSize(size)}
-                                className={`w-[80px] h-[60px] font-display text-2xl tracking-widest flex items-center justify-center transition-all border ${
+                                className={`h-16 font-display text-xl tracking-widest flex items-center justify-center transition-all border ${
                                     selectedSize === size 
-                                    ? 'bg-pitch text-dark border-pitch shadow-[0_0_15px_rgba(0,255,135,0.4)]' 
-                                    : 'bg-dark border-white/20 text-white hover:border-white hover:bg-white/5'
+                                    ? 'bg-black text-white border-black' 
+                                    : 'bg-white border-gray-100 text-black hover:border-black'
                                 }`}
                             >
                                 {size}
@@ -135,10 +147,10 @@ export default function ProductClientDetails({ product }: { product: any }) {
                     </div>
                 </div>
 
-                {/* Simulateur Flocage Sport Premium */}
+                {/* Flockage Customization */}
                 {product.hasFlockage && (
-                    <div className={`mb-10 p-6 border-2 transition-all duration-300 ${hasFlockage ? 'bg-black/50 border-pitch shadow-[0_0_15px_rgba(0,255,135,0.1)]' : 'bg-jersey border-white/10'}`}>
-                        <label className="flex items-center justify-between cursor-pointer group">
+                    <div className="mb-12 border-t border-gray-100 pt-10">
+                        <label className="flex items-center justify-between cursor-pointer group mb-6">
                             <input 
                                 type="checkbox" 
                                 className="hidden" 
@@ -146,14 +158,14 @@ export default function ProductClientDetails({ product }: { product: any }) {
                                 onChange={(e) => setHasFlockage(e.target.checked)} 
                             />
                             <div className="flex items-center gap-4">
-                                <div className={`w-8 h-8 flex items-center justify-center border-2 transition-colors ${hasFlockage ? 'bg-pitch border-pitch' : 'border-white/50 bg-transparent group-hover:border-white'}`}>
-                                    {hasFlockage && <div className="w-3 h-3 bg-dark" />}
+                                <div className={`w-5 h-5 flex items-center justify-center border transition-colors ${hasFlockage ? 'bg-black border-black' : 'border-gray-200 group-hover:border-black'}`}>
+                                    {hasFlockage && <div className="w-2 h-2 bg-white" />}
                                 </div>
-                                <span className={`font-display text-2xl tracking-widest uppercase ${hasFlockage ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>
-                                    AJOUTER UN FLOCAGE
+                                <span className="font-display text-lg tracking-widest uppercase font-bold">
+                                    PERSONNALISATION
                                 </span>
                             </div>
-                            <span className={`font-display text-2xl tracking-widest ${hasFlockage ? 'text-pitch' : 'text-gray-500'}`}>+{FLOCKAGE_PRICE} F</span>
+                            <span className="font-display text-lg tracking-widest">+{FLOCKAGE_PRICE} FCFA</span>
                         </label>
                         
                         <AnimatePresence>
@@ -162,65 +174,57 @@ export default function ProductClientDetails({ product }: { product: any }) {
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
                                     exit={{ opacity: 0, height: 0 }}
-                                    className="mt-6 space-y-4 overflow-hidden"
+                                    className="space-y-6"
                                 >
-                                    <div className="relative">
-                                        <input 
-                                            type="text"
-                                            placeholder="EX: BELLINGHAM 5"
-                                            value={flockageText}
-                                            onChange={(e) => setFlockageText(e.target.value)}
-                                            className="w-full bg-dark border border-white/20 text-white px-5 py-4 focus:outline-none focus:border-pitch font-body uppercase text-xl placeholder-gray-600 transition-colors"
-                                            maxLength={16}
-                                        />
-                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-display text-gray-500">
-                                            {16 - flockageText.length}
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Aperçu Live */}
-                                    <div className="bg-dark/80 p-6 flex flex-col items-center justify-center border-t-2 border-pitch h-[140px] shadow-inner relative overflow-hidden">
-                                        <p className="absolute top-2 left-2 text-pitch/50 text-xs font-display uppercase tracking-widest">APERÇU</p>
-                                        <p className="font-display text-5xl md:text-6xl text-white uppercase tracking-widest text-center break-words max-w-full leading-none mt-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-                                            {flockageText || 'NOM NUMÉRO'}
-                                        </p>
-                                    </div>
+                                    <input 
+                                        type="text"
+                                        placeholder="NOM & NUMÉRO (EX: DIOP 10)"
+                                        value={flockageText}
+                                        onChange={(e) => setFlockageText(e.target.value)}
+                                        className="w-full bg-brand-grey border-0 text-black px-6 py-5 focus:ring-1 focus:ring-black font-body uppercase text-lg tracking-widest placeholder-gray-400"
+                                        maxLength={16}
+                                    />
                                 </motion.div>
                             )}
                         </AnimatePresence>
                     </div>
                 )}
 
-                {/* Quantité & Action d'Ajout */}
-                <div className="flex flex-col sm:flex-row items-center gap-6 mt-auto mb-10 w-full">
-                    <div className="flex items-center bg-dark border border-white/20 p-1 w-full sm:w-40 justify-between shrink-0 h-[68px]">
-                        <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-14 h-full flex items-center justify-center font-display text-3xl text-gray-500 hover:text-white bg-jersey transition-colors">-</button>
-                        <span className="font-display text-3xl select-none">{quantity}</span>
-                        <button onClick={() => setQuantity(Math.min(10, quantity + 1))} className="w-14 h-full flex items-center justify-center font-display text-3xl text-gray-500 hover:text-white bg-jersey transition-colors">+</button>
+                {/* Counter & Add to Cart */}
+                <div className="flex gap-4 mb-12">
+                    <div className="flex items-center border border-gray-100 h-20">
+                        <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-16 h-full flex items-center justify-center hover:bg-gray-50 transition-colors"><Minus size={20} /></button>
+                        <span className="w-12 text-center font-display text-2xl">{quantity}</span>
+                        <button onClick={() => setQuantity(Math.min(10, quantity + 1))} className="w-16 h-full flex items-center justify-center hover:bg-gray-50 transition-colors"><Plus size={20} /></button>
                     </div>
                     
-                    <div className="flex-1 w-full h-[68px]" id="cart-btn-container">
-                        <NeonButton 
-                            className="w-full h-full text-2xl"
-                            onClick={addToCart}
-                            disabled={isButtonDisabled}
-                        >
-                            {!product.inStock 
-                                ? 'SOLD OUT' 
-                                : !selectedSize 
-                                ? 'SÉLECTIONNER TAILLE'
-                                : 'AJOUTER AU PANIER'
-                            }
-                        </NeonButton>
-                    </div>
+                    <button 
+                        className={`flex-1 h-20 font-display text-2xl tracking-[0.2em] transition-all uppercase ${
+                            isButtonDisabled 
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                            : 'bg-black text-white hover:opacity-80'
+                        }`}
+                        onClick={addToCart}
+                        disabled={isButtonDisabled}
+                    >
+                        {!product.inStock 
+                            ? 'STOCKS ÉPUISÉS' 
+                            : !selectedSize 
+                            ? 'CHOISIR UNE TAILLE'
+                            : 'AJOUTER AU PANIER'
+                        }
+                    </button>
                 </div>
                 
-                {/* Réassurance */}
-                <div className="p-6 bg-jersey flex items-center gap-4 border border-white/5">
-                    <ShieldCheck className="text-pitch shrink-0" size={32} />
-                    <div>
-                        <p className="font-display text-xl tracking-widest text-white uppercase">PAIEMENT SÉCURISÉ</p>
-                        <p className="text-sm text-gray-400 font-body uppercase tracking-wider mt-1">LIVRAISON 24H/48H. RETOURS SOUS 14 JOURS.</p>
+                {/* Reassurance Sidebar */}
+                <div className="grid grid-cols-1 gap-6 pt-10 border-t border-gray-100">
+                    <div className="flex items-center gap-4">
+                        <Truck size={24} strokeWidth={1} />
+                        <span className="text-[10px] font-display text-gray-400 uppercase tracking-widest">LIVRAISON EN 48H PARTOUT AU SÉNÉGAL</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <RotateCcw size={24} strokeWidth={1} />
+                        <span className="text-[10px] font-display text-gray-400 uppercase tracking-widest">RETOURS GRATUITS SOUS 14 JOURS</span>
                     </div>
                 </div>
             </div>
