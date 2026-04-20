@@ -3,6 +3,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getProducts } from '@/lib/api';
 import ProductCard from '@/components/ProductCard';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function RechercheContent() {
     const searchParams = useSearchParams();
@@ -15,7 +16,6 @@ function RechercheContent() {
             setLoading(true);
             const data = await getProducts();
             if (data && Array.isArray(data)) {
-                // Filtre simple côté client
                 const filtered = data.filter(p => 
                     p.name.toLowerCase().includes(query.toLowerCase()) || 
                     (p.team && p.team.toLowerCase().includes(query.toLowerCase())) ||
@@ -29,32 +29,52 @@ function RechercheContent() {
     }, [query]);
 
     return (
-        <div className="min-h-[60vh] pb-20">
-            <div className="mb-10 text-center">
-                <h1 className="font-poppins font-black text-3xl md:text-5xl text-brand-black tracking-tight mb-4">
-                    Résultats pour : <span className="text-brand-accent">"{query}"</span>
+        <div className="min-h-[70vh] pb-24 max-w-7xl mx-auto px-4 text-white">
+            <div className="mb-16 text-center pt-10">
+                <h1 className="font-display font-black text-5xl md:text-8xl tracking-widest uppercase mb-4 leading-none">
+                    RÉSULTATS : <span className="text-pitch">"{query}"</span>
                 </h1>
-                <p className="font-semibold text-gray-400">
-                    {loading ? 'Recherche en cours...' : `${results.length} maillot(s) trouvé(s)`}
+                <p className="font-body text-gray-500 text-xl tracking-[0.2em] uppercase">
+                    {loading ? 'RECHERCHE EN COURS...' : `${results.length} MAILLOT${results.length > 1 ? 'S' : ''} TROUVÉ${results.length > 1 ? 'S' : ''}`}
                 </p>
             </div>
 
             {loading ? (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {[1, 2, 3, 4].map(n => (
-                        <div key={n} className="aspect-[3/4] bg-gray-100 animate-pulse rounded-2xl w-full"></div>
-                    ))}
-                </div>
-            ) : results.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-                    {results.map(product => (
-                        <ProductCard key={product.id} product={product} />
+                        <div key={n} className="aspect-[4/5] bg-jersey animate-pulse border border-white/5 w-full"></div>
                     ))}
                 </div>
             ) : (
-                <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-3xl border border-dashed border-gray-300">
-                    <p className="text-xl font-bold text-gray-500">Aucun produit ne correspond à votre recherche.</p>
-                </div>
+                <AnimatePresence mode="popLayout">
+                    {results.length > 0 ? (
+                        <motion.div 
+                            layout
+                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+                        >
+                            {results.map(product => (
+                                <motion.div
+                                    key={product.id}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <ProductCard product={product} />
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    ) : (
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="flex flex-col items-center justify-center py-32 bg-jersey border border-white/5"
+                        >
+                            <p className="text-3xl font-display text-gray-500 tracking-[0.2em] uppercase text-center">Aucun match pour votre recherche</p>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             )}
         </div>
     );
@@ -62,7 +82,7 @@ function RechercheContent() {
 
 export default function RecherchePage() {
     return (
-        <Suspense fallback={<div className="flex justify-center py-20"><p className="font-bold">Chargement...</p></div>}>
+        <Suspense fallback={<div className="flex flex-col items-center justify-center py-32 text-white font-display text-3xl tracking-widest">CHARGEMENT...</div>}>
             <RechercheContent />
         </Suspense>
     );

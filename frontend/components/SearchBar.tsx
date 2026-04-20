@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getProducts } from '@/lib/api';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function SearchBar() {
     const [query, setQuery] = useState('');
@@ -13,7 +14,6 @@ export default function SearchBar() {
     const [allProducts, setAllProducts] = useState<any[]>([]);
 
     useEffect(() => {
-        // Précharger les produits pour la recherche rapide côté client (MVP)
         const fetchAll = async () => {
             const data = await getProducts();
             if (data && Array.isArray(data)) {
@@ -23,7 +23,6 @@ export default function SearchBar() {
         fetchAll();
     }, []);
 
-    // Fermer les suggestions si on clique à l'extérieur
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -42,7 +41,7 @@ export default function SearchBar() {
             const results = allProducts.filter(p => 
                 p.name.toLowerCase().includes(q.toLowerCase()) || 
                 (p.team && p.team.toLowerCase().includes(q.toLowerCase()))
-            ).slice(0, 5); // Max 5 suggestions
+            ).slice(0, 5); 
             setSuggestions(results);
         } else {
             setSuggestions([]);
@@ -59,58 +58,77 @@ export default function SearchBar() {
 
     return (
         <div className="relative w-full" ref={searchRef}>
-            <form onSubmit={handleSubmit} className="relative">
+            <form onSubmit={handleSubmit} className="relative group">
                 <input
                     type="text"
                     value={query}
                     onChange={handleSearch}
                     onFocus={() => setIsFocused(true)}
-                    placeholder="Rechercher un maillot, un club..."
-                    className="w-full bg-gray-100 text-sm font-semibold rounded-full py-3 pr-10 pl-5 focus:outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-all text-brand-black placeholder-gray-400"
+                    placeholder="RECHERCHER UN MAILLOT..."
+                    className="w-full bg-dark border border-white/10 text-white font-body text-sm tracking-widest py-3 pr-12 pl-6 focus:outline-none focus:border-pitch focus:shadow-[0_0_15px_rgba(0,255,135,0.2)] transition-all placeholder:text-gray-700"
                 />
                 
-                {query.length > 0 ? (
-                    <button type="button" onClick={() => {setQuery(''); setSuggestions([])}} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-black">
-                        <X size={18} />
-                    </button>
-                ) : (
-                    <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-accent">
-                        <Search size={18} />
-                    </button>
-                )}
-            </form>
-
-            {/* Modal Suggestions */}
-            {isFocused && suggestions.length > 0 && query.length > 2 && (
-                <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-slide-up">
-                    <div className="p-2">
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest px-3 pt-2 pb-2">Produits trouvés</p>
-                        {suggestions.map(product => (
-                            <button
-                                key={product.id}
-                                onClick={() => {
-                                    setIsFocused(false);
-                                    setQuery('');
-                                    router.push(`/products/${product.slug}`);
-                                }}
-                                className="w-full text-left px-3 py-3 hover:bg-gray-50 rounded-xl flex items-center gap-4 transition-colors"
-                            >
-                                <img src={product.images[0] || 'https://via.placeholder.com/40'} alt={product.name} className="w-10 h-10 rounded-md object-cover bg-gray-100" />
-                                <div className="flex-1 overflow-hidden">
-                                    <p className="font-bold text-sm text-brand-black truncate">{product.name}</p>
-                                    <p className="text-xs font-semibold text-brand-accent">{product.price.toLocaleString()} FCFA</p>
-                                </div>
-                            </button>
-                        ))}
-                    </div>
-                    <button 
-                        onClick={handleSubmit}
-                        className="w-full bg-gray-50 py-3 text-sm font-bold text-brand-accent hover:bg-gray-100 transition-colors border-t border-gray-100"
-                    >
-                        Voir tous les résultats ({allProducts.filter(p => p.name.toLowerCase().includes(query.toLowerCase())).length})
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                    {query.length > 0 && (
+                        <button type="button" onClick={() => {setQuery(''); setSuggestions([])}} className="text-gray-500 hover:text-white transition-colors">
+                            <X size={18} />
+                        </button>
+                    )}
+                    <button type="submit" className="text-gray-500 hover:text-pitch transition-colors">
+                        <Search size={20} />
                     </button>
                 </div>
-            )}
+            </form>
+
+            <AnimatePresence>
+                {isFocused && (suggestions.length > 0 || query.length > 2) && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute top-full left-0 w-full mt-3 bg-dark border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden z-50"
+                    >
+                        <div className="p-3">
+                            <p className="font-display text-lg text-pitch uppercase tracking-[0.2em] px-3 pt-2 pb-4 border-b border-white/5 mb-2">RÉSULTATS RAPIDES</p>
+                            
+                            {suggestions.length > 0 ? (
+                                <div className="space-y-1">
+                                    {suggestions.map(product => (
+                                        <button
+                                            key={product.id}
+                                            onClick={() => {
+                                                setIsFocused(false);
+                                                setQuery('');
+                                                router.push(`/products/${product.slug}`);
+                                            }}
+                                            className="w-full text-left px-4 py-3 hover:bg-white/5 flex items-center gap-5 transition-colors group"
+                                        >
+                                            <div className="w-14 h-14 bg-jersey border border-white/5 flex items-center justify-center p-2 group-hover:border-pitch/50 transition-colors">
+                                                <img src={product.images[0] || 'https://via.placeholder.com/60/000/fff?text=ICON'} alt={product.name} className="w-full h-full object-contain filter drop-shadow-md" />
+                                            </div>
+                                            <div className="flex-1 overflow-hidden">
+                                                <p className="font-display text-xl text-white tracking-widest truncate group-hover:text-pitch transition-colors uppercase">{product.name}</p>
+                                                <p className="font-body text-sm text-gold uppercase tracking-tighter">{product.price.toLocaleString()} FCFA</p>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-gray-600 font-body text-center py-6 uppercase tracking-widest">Aucun maillot trouvé pour "{query}"</p>
+                            )}
+                        </div>
+                        
+                        {suggestions.length > 0 && (
+                            <button 
+                                onClick={handleSubmit}
+                                className="w-full bg-pitch py-4 text-dark font-display text-xl tracking-[0.2em] hover:bg-white transition-colors border-t border-white/10 uppercase"
+                            >
+                                TOUT VOIR ({allProducts.filter(p => p.name.toLowerCase().includes(query.toLowerCase())).length})
+                            </button>
+                        )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
