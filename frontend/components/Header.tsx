@@ -1,64 +1,86 @@
 'use client';
 import Link from 'next/link';
-import { ShoppingBag, Search, Menu, X, User } from 'lucide-react';
+import { Search, Menu, X, User } from 'lucide-react';
 import CartIcon from './CartIcon';
 import SearchBar from './SearchBar';
 import { useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
 
+    const { scrollY } = useScroll();
+    const backgroundColor = useTransform(
+        scrollY,
+        [0, 100],
+        ['rgba(10, 10, 10, 0)', 'rgba(10, 10, 10, 0.95)']
+    );
+    const backdropFilter = useTransform(
+        scrollY,
+        [0, 100],
+        ['blur(0px)', 'blur(8px)']
+    );
+    const borderBottomColor = useTransform(
+        scrollY,
+        [0, 100],
+        ['rgba(0, 255, 135, 0)', 'rgba(0, 255, 135, 0.2)']
+    );
+
     return (
-        <header className="sticky top-0 z-50 bg-brand-white border-b border-gray-100 shadow-sm font-inter">
+        <motion.header 
+            style={{ backgroundColor, backdropFilter, borderBottomColor }}
+            className="fixed top-0 w-full z-50 border-b transition-all duration-300"
+        >
             {/* Top Bar Promo */}
-            <div className="bg-brand-black text-brand-white text-xs font-bold py-2 text-center tracking-wide">
-                🔥 LIVRAISON OFFERTE PARTOUT AU SÉNÉGAL DÈS 50.000 FCFA 🔥
+            <div className="bg-pitch text-dark text-xs font-display py-1.5 text-center tracking-[0.3em] uppercase hidden md:block">
+                LIVRAISON OFFERTE PARTOUT AU SÉNÉGAL DÈS 50.000 FCFA
             </div>
             
             <div className="container mx-auto px-4 lg:px-8">
-                <div className="flex items-center justify-between h-20">
+                <div className="flex items-center justify-between h-20 md:h-24">
                     
                     {/* Mobile Menu Toggle */}
-                    <button className="lg:hidden p-2 text-brand-black" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                        {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    <button className="lg:hidden p-2 text-white hover:text-pitch transition-colors" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                        {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
                     </button>
 
                     {/* Logo */}
                     <div className="flex-shrink-0 flex items-center">
-                        <Link href="/" className="font-poppins font-black text-3xl tracking-tighter text-brand-black">
-                            MAILLOTS<span className="text-brand-accent">.</span>
+                        <Link href="/" className="font-display font-black text-4xl md:text-5xl tracking-tighter flex items-center">
+                            <span className="text-pitch drop-shadow-[0_0_10px_rgba(0,255,135,0.4)]">JERSEY</span>
+                            <span className="text-white ml-2">SHORE</span>
                         </Link>
                     </div>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden lg:flex items-center gap-8">
-                        <Link href="/explorer" className="text-sm font-bold text-gray-800 hover:text-brand-accent transition-colors">TOUS LES MAILLOTS</Link>
-                        <Link href="/equipe/senegal" className="text-sm font-bold text-gray-800 hover:text-brand-accent transition-colors">LIONS DU SÉNÉGAL</Link>
-                        <Link href="/equipe/psg" className="text-sm font-bold text-gray-800 hover:text-brand-accent transition-colors">PSG</Link>
-                        <Link href="/equipe/real-madrid" className="text-sm font-bold text-gray-800 hover:text-brand-accent transition-colors">REAL MADRID</Link>
+                    <nav className="hidden lg:flex items-center gap-10">
+                        <Link href="/explorer" className="text-base font-body tracking-[0.2em] text-white uppercase hover:text-pitch hover:drop-shadow-[0_0_8px_rgba(0,255,135,0.5)] transition-all">COLLECTION</Link>
+                        <Link href="/equipe/senegal" className="text-base font-body tracking-[0.2em] text-white uppercase hover:text-pitch hover:drop-shadow-[0_0_8px_rgba(0,255,135,0.5)] transition-all">SÉNÉGAL</Link>
+                        <Link href="/equipe/psg" className="text-base font-body tracking-[0.2em] text-white uppercase hover:text-pitch hover:drop-shadow-[0_0_8px_rgba(0,255,135,0.5)] transition-all">PSG</Link>
+                        <Link href="/equipe/real-madrid" className="text-base font-body tracking-[0.2em] text-white uppercase hover:text-pitch hover:drop-shadow-[0_0_8px_rgba(0,255,135,0.5)] transition-all">REAL MADRID</Link>
                     </nav>
 
                     {/* Right Icons: Search & Cart */}
-                    <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-6">
                         
                         {/* Search Desktop */}
-                        <div className="hidden lg:block w-72 relative">
+                        <div className="hidden lg:block w-64 relative">
                             <SearchBar />
                         </div>
 
                         {/* Search Mobile Toggle */}
-                        <button className="lg:hidden p-2 text-brand-black" onClick={() => setSearchOpen(!searchOpen)}>
+                        <button className="lg:hidden p-2 text-white hover:text-pitch transition-colors" onClick={() => setSearchOpen(!searchOpen)}>
                             <Search size={24} />
                         </button>
 
                         {/* Admin Link / User */}
-                        <Link href="/admin" className="hidden sm:flex text-gray-600 hover:text-brand-accent transition-colors">
+                        <Link href="/admin" className="hidden sm:flex text-gray-400 hover:text-pitch transition-colors">
                             <User size={24} />
                         </Link>
 
                         {/* Cart */}
-                        <div className="flex items-center bg-gray-50 px-3 py-2 rounded-full border border-gray-200 shadow-sm hover:border-brand-accent transition-colors cursor-pointer">
+                        <div className="flex items-center px-2 py-2 rounded-full border border-white/20 hover:border-pitch hover:shadow-[0_0_15px_rgba(0,255,135,0.3)] transition-all cursor-pointer bg-black/50 text-white">
                             <CartIcon />
                         </div>
                     </div>
@@ -66,7 +88,7 @@ export default function Header() {
 
                 {/* Mobile Search Bar Dropdown */}
                 {searchOpen && (
-                    <div className="lg:hidden py-4 border-t border-gray-100 animate-slide-up">
+                    <div className="lg:hidden pb-4">
                         <SearchBar />
                     </div>
                 )}
@@ -74,16 +96,16 @@ export default function Header() {
 
             {/* Mobile Menu Dropdown */}
             {mobileMenuOpen && (
-                <div className="lg:hidden absolute top-full left-0 w-full bg-brand-white border-b border-gray-200 shadow-xl overflow-hidden animate-slide-up">
-                    <nav className="flex flex-col p-4">
-                        <Link href="/explorer" onClick={() => setMobileMenuOpen(false)} className="py-4 border-b border-gray-100 text-lg font-bold text-brand-black">TOUS LES MAILLOTS</Link>
-                        <Link href="/equipe/senegal" onClick={() => setMobileMenuOpen(false)} className="py-4 border-b border-gray-100 text-lg font-bold text-brand-black">LIONS DU SÉNÉGAL</Link>
-                        <Link href="/equipe/psg" onClick={() => setMobileMenuOpen(false)} className="py-4 border-b border-gray-100 text-lg font-bold text-brand-black">PSG</Link>
-                        <Link href="/equipe/real-madrid" onClick={() => setMobileMenuOpen(false)} className="py-4 border-b border-gray-100 text-lg font-bold text-brand-black">REAL MADRID</Link>
-                        <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="py-4 text-brand-accent font-bold">Panel Administrateur</Link>
+                <div className="lg:hidden absolute top-full left-0 w-full bg-dark/95 backdrop-blur-md border-b border-white/10 shadow-2xl overflow-hidden">
+                    <nav className="flex flex-col p-6 gap-6 font-display text-2xl tracking-widest text-center">
+                        <Link href="/explorer" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-pitch">COLLECTION</Link>
+                        <Link href="/equipe/senegal" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-pitch">SÉNÉGAL</Link>
+                        <Link href="/equipe/psg" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-pitch">PSG</Link>
+                        <Link href="/equipe/real-madrid" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-pitch">REAL MADRID</Link>
+                        <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="text-pitch mt-4 border-t border-white/10 pt-4">ADMINISTRATION</Link>
                     </nav>
                 </div>
             )}
-        </header>
+        </motion.header>
     );
 }

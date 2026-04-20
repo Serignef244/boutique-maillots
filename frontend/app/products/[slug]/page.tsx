@@ -7,15 +7,15 @@ export default async function ProductPage({ params }: { params: { slug: string }
 
     if (!product) {
         return (
-            <div className="text-center py-32 flex flex-col items-center">
-                <h1 className="text-3xl font-bold mb-4 text-gray-800">Produit introuvable</h1>
-                <Link href="/" className="text-blue-600 hover:underline font-medium">Retour à l'accueil</Link>
+            <div className="text-center py-32 flex flex-col items-center flex-grow max-w-7xl mx-auto text-white">
+                <h1 className="text-5xl font-display uppercase tracking-widest mb-4">PRODUIT INTROUVABLE</h1>
+                <Link href="/" className="text-pitch hover:underline font-body text-xl uppercase tracking-widest">RETOUR À L'ACCUEIL</Link>
             </div>
         );
     }
 
     return (
-        <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 md:p-10 max-w-7xl mx-auto">
+        <div className="py-12 px-6 max-w-7xl mx-auto flex-grow w-full">
             <ProductClientDetails product={product} />
         </div>
     );

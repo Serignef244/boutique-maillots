@@ -3,6 +3,7 @@ import { Inter, Poppins } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import CustomCursor from '@/components/ui/CustomCursor';
 
 const inter = Inter({ 
     subsets: ['latin'],
@@ -16,9 +17,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-    title: 'Maillots Store - Vêtements de sport premium',
+    title: 'JERSEY SHORE - Collection Exclusive',
     description: 'La référence en maillots de football authentiques et flocages officiels.',
-    viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
 };
 
 export default function RootLayout({
@@ -27,10 +27,11 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="fr" className="scroll-smooth">
-            <body className={`${inter.variable} ${poppins.variable} font-inter bg-brand-white text-brand-black min-h-screen flex flex-col antialiased selection:bg-brand-accent selection:text-white`}>
+        <html lang="fr" className="scroll-smooth bg-dark text-white">
+            <body className={`${inter.variable} ${poppins.variable} font-body bg-dark text-white min-h-screen flex flex-col antialiased selection:bg-pitch selection:text-dark`}>
+                <CustomCursor />
                 <Header />
-                <main className="flex-grow w-full">
+                <main className="flex-grow w-full relative z-10">
                     {children}
                 </main>
                 <Footer />
