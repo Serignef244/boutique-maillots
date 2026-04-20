@@ -2,10 +2,10 @@
 
 export default function MarqueeBand() {
   return (
-    <div className="w-full bg-pitch py-4 overflow-hidden border-y-4 border-pitch relative z-20">
-      <div className="flex whitespace-nowrap animate-marquee font-display text-4xl text-dark tracking-[0.2em] font-black">
+    <div className="w-full bg-black py-4 overflow-hidden relative z-20">
+      <div className="flex whitespace-nowrap animate-marquee font-display text-4xl text-white tracking-[0.3em] font-black uppercase">
         {Array.from({ length: 4 }).map((_, i) => (
-          <span key={i} className="mx-4">
+          <span key={i} className="mx-8">
             FRANCE • REAL MADRID • BARCELONE • PSG • SÉNÉGAL • LIVERPOOL •
           </span>
         ))}

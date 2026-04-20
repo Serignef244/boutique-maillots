@@ -24,7 +24,7 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="flex flex-col w-full bg-dark text-white min-h-screen">
+        <div className="flex flex-col w-full bg-white text-black min-h-screen">
             <LoadingScreen />
             
             <HeroSection />

@@ -16,7 +16,7 @@ export default function HeroSection() {
         <motion.p 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-display text-sm md:text-xl tracking-[0.5em] text-gray-400 mb-6 uppercase"
+          className="font-display text-sm md:text-xl tracking-[0.5em] text-gray-300 mb-6 uppercase"
         >
           Nouveautés 2024
         </motion.p>
@@ -32,7 +32,7 @@ export default function HeroSection() {
           <motion.span 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="block text-gray-200"
+            className="block"
           >
             SANS LIMITE
           </motion.span>
