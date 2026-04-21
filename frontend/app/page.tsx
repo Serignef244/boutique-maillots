@@ -5,7 +5,7 @@ import { getProducts } from '@/lib/api';
 import LoadingScreen from '@/components/home/LoadingScreen';
 import HeroSection from '@/components/home/HeroSection';
 import MarqueeBand from '@/components/home/MarqueeBand';
-import PlayersSection from '@/components/home/PlayersSection';
+
 import FilteredCollection from '@/components/home/FilteredCollection';
 
 export default function Home() {
@@ -31,8 +31,7 @@ export default function Home() {
             
             <MarqueeBand />
             
-            <PlayersSection />
-            
+
             <FilteredCollection products={products} loading={loading} />
             
         </div>
