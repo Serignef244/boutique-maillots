@@ -84,7 +84,7 @@ export default function ExplorerPage() {
                 />
 
                 {/* Grille Produits */}
-                <div className="flex-1 w-full pb-32">
+                <div className="flex-1 min-w-0 pb-32">
                     
                     {/* En-tête de recherche/résultats */}
                     <div className="flex flex-col mb-12 border-b border-gray-100 pb-12">
@@ -98,7 +98,7 @@ export default function ExplorerPage() {
                         </div>
 
                         {/* Quick Filter Chips (Mobile/Desktop) */}
-                        <div className="flex overflow-x-auto pb-4 gap-3 no-scrollbar -mx-4 px-4 mask-fade-right">
+                        <div className="flex overflow-x-auto pb-4 gap-3 no-scrollbar -mx-4 px-4 mask-fade-right max-w-full">
                            <button 
                              onClick={() => handleFilterChange('teams', [])}
                              className={`px-6 py-2 whitespace-nowrap font-display text-sm tracking-widest border transition-all ${activeFilters.teams.length === 0 ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-200'}`}
@@ -118,9 +118,9 @@ export default function ExplorerPage() {
                     </div>
 
                     {loading ? (
-                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 md:gap-x-8 gap-y-12">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 md:gap-x-8 gap-y-12 grid-flow-dense">
                             {[1, 2, 3, 4, 5, 6].map((n, i) => (
-                                <div key={n} className={`${i % 4 === 0 ? 'col-span-2' : 'col-span-1'}`}>
+                                <div key={n} className={`${i % 2 === 0 ? 'col-span-2' : 'col-span-1'}`}>
                                     <ProductSkeleton />
                                 </div>
                             ))}
@@ -130,7 +130,7 @@ export default function ExplorerPage() {
                             {filteredProducts.length > 0 ? (
                                 <motion.div 
                                     layout
-                                    className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 md:gap-x-8 gap-y-12 md:gap-y-16"
+                                    className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 md:gap-x-8 gap-y-12 md:gap-y-16 grid-flow-dense"
                                 >
                                     {filteredProducts.map((product, index) => (
                                         <motion.div
@@ -140,7 +140,7 @@ export default function ExplorerPage() {
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, scale: 0.9 }}
                                             transition={{ duration: 0.4, delay: index * 0.05 }}
-                                            className={`${index % 4 === 0 ? 'col-span-2' : 'col-span-1'}`}
+                                            className={`${index % 2 === 0 ? 'col-span-2' : 'col-span-1'}`}
                                         >
                                             <ProductCard product={product} />
                                         </motion.div>

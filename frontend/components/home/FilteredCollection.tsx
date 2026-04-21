@@ -42,19 +42,19 @@ export default function FilteredCollection({ products, loading }: { products: an
 
         {/* Grid Magazine Layout */}
         {loading ? (
-           <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-12 md:gap-y-16">
+           <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-12 md:gap-y-16 grid-flow-dense">
               {[1,2,3,4,5,6].map((n, i) => (
-                <div key={n} className={`${i % 3 === 0 ? 'col-span-2' : 'col-span-1'}`}>
+                <div key={n} className={`${i % 2 === 0 ? 'col-span-2' : 'col-span-1'}`}>
                   <ProductSkeleton />
                 </div>
               ))}
            </div>
         ) : (
-          <motion.div layout className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-12 md:gap-y-16">
+          <motion.div layout className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-12 md:gap-y-16 grid-flow-dense">
             <AnimatePresence mode="popLayout">
               {filtered.map((product, index) => {
-                // Layout Magazine Logic: Chaque 3ème produit prend 2 colonnes sur mobile/tablet
-                const isLarge = index % 5 === 0; 
+                // Layout Magazine Logic stable
+                const isLarge = index % 2 === 0; 
                 
                 return (
                   <motion.div
