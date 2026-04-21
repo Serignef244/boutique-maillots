@@ -5,14 +5,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Filters({ 
     onFilterChange, 
-    activeFilters 
+    activeFilters,
+    availableTeams = []
 }: { 
     onFilterChange: (type: string, value: any) => void;
     activeFilters: any;
+    availableTeams?: string[];
 }) {
     const [isOpenMobile, setIsOpenMobile] = useState(false);
     
-    const teams = ['PSG', 'Real Madrid', 'Sénégal', 'Barcelone', 'Marseille', 'Man City'];
+    // Trier les équipes par ordre alphabétique pour une meilleure expérience
+    const sortedTeams = [...availableTeams].sort((a, b) => a.localeCompare(b));
     const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
     
     const [openSections, setOpenSections] = useState({
@@ -53,12 +56,12 @@ export default function Filters({
                 </button>
             </div>
 
-            <div className="space-y-12 flex-1 overflow-y-auto pr-2">
+            <div className="space-y-12 flex-1 overflow-y-auto pr-2 custom-scrollbar">
                 
-                {/* Section Equipes */}
+                {/* Section Equipes (Dynamique) */}
                 <div className="border-b border-gray-100 pb-10">
                     <button onClick={() => toggleSection('equipe')} className="flex w-full justify-between items-center mb-8">
-                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase">CHOISIR L'ÉQUIPE</span>
+                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase font-bold">ÉQUIPES DISPONIBLES</span>
                         {openSections.equipe ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                     </button>
                     <AnimatePresence>
@@ -69,20 +72,24 @@ export default function Filters({
                                 exit={{ opacity: 0, height: 0 }}
                                 className="space-y-4 overflow-hidden"
                             >
-                                {teams.map(team => (
-                                    <label key={team} className="flex items-center gap-4 cursor-pointer group w-full">
-                                        <input 
-                                            type="checkbox" 
-                                            className="hidden" 
-                                            checked={activeFilters.teams?.includes(team)}
-                                            onChange={() => handleTeamToggle(team)}
-                                        />
-                                        <div className={`w-5 h-5 border transition-all flex items-center justify-center ${activeFilters.teams?.includes(team) ? 'bg-black border-black' : 'border-gray-200 group-hover:border-black'}`}>
-                                            {activeFilters.teams?.includes(team) && <div className="w-2 h-2 bg-white" />}
-                                        </div>
-                                        <span className={`font-body text-base uppercase tracking-widest transition-colors ${activeFilters.teams?.includes(team) ? 'text-black font-bold' : 'text-gray-400 group-hover:text-black'}`}>{team}</span>
-                                    </label>
-                                ))}
+                                {sortedTeams.length > 0 ? (
+                                    sortedTeams.map(team => (
+                                        <label key={team} className="flex items-center gap-4 cursor-pointer group w-full">
+                                            <input 
+                                                type="checkbox" 
+                                                className="hidden" 
+                                                checked={activeFilters.teams?.includes(team)}
+                                                onChange={() => handleTeamToggle(team)}
+                                            />
+                                            <div className={`w-5 h-5 border transition-all flex items-center justify-center ${activeFilters.teams?.includes(team) ? 'bg-black border-black' : 'border-gray-200 group-hover:border-black'}`}>
+                                                {activeFilters.teams?.includes(team) && <div className="w-2 h-2 bg-white" />}
+                                            </div>
+                                            <span className={`font-body text-base uppercase tracking-widest transition-colors ${activeFilters.teams?.includes(team) ? 'text-black font-bold' : 'text-gray-400 group-hover:text-black'}`}>{team}</span>
+                                        </label>
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-gray-400 uppercase italic tracking-widest">Aucune équipe disponible</p>
+                                )}
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -91,7 +98,7 @@ export default function Filters({
                 {/* Section Tailles */}
                 <div className="border-b border-gray-100 pb-10">
                     <button onClick={() => toggleSection('taille')} className="flex w-full justify-between items-center mb-8">
-                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase">TAILLES</span>
+                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase font-bold">TAILLES</span>
                         {openSections.taille ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                     </button>
                     <AnimatePresence>
@@ -123,20 +130,20 @@ export default function Filters({
                 {/* Autres filtres (Promos, Stock) */}
                 <div className="pb-10 space-y-8">
                     <label className="flex items-center justify-between cursor-pointer group">
-                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase">EN PROMOTION</span>
+                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase font-bold">OFFRES SPÉCIALES</span>
                         <div className="relative">
                             <input type="checkbox" className="hidden" checked={activeFilters.promoOnly || false} onChange={e => onFilterChange('promoOnly', e.target.checked)} />
-                            <div className={`w-12 h-6 flex items-center p-1 transition-colors ${activeFilters.promoOnly ? 'bg-black' : 'bg-gray-100 border border-gray-200'}`}>
+                            <div className={`w-12 h-6 flex items-center p-1 transition-colors ${activeFilters.promoOnly ? 'bg-black' : 'bg-gray-100 border border-gray-200 group-hover:border-black'}`}>
                                 <div className={`bg-white w-4 h-4 shadow-sm transform transition-transform ${activeFilters.promoOnly ? 'translate-x-6' : ''}`} />
                             </div>
                         </div>
                     </label>
 
                     <label className="flex items-center justify-between cursor-pointer group">
-                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase">EN STOCK</span>
+                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase font-bold">DISPONIBLE EN STOCK</span>
                         <div className="relative">
                             <input type="checkbox" className="hidden" checked={activeFilters.inStockOnly || false} onChange={e => onFilterChange('inStockOnly', e.target.checked)} />
-                            <div className={`w-12 h-6 flex items-center p-1 transition-colors ${activeFilters.inStockOnly ? 'bg-black' : 'bg-gray-100 border border-gray-200'}`}>
+                            <div className={`w-12 h-6 flex items-center p-1 transition-colors ${activeFilters.inStockOnly ? 'bg-black' : 'bg-gray-100 border border-gray-200 group-hover:border-black'}`}>
                                 <div className={`bg-white w-4 h-4 shadow-sm transform transition-transform ${activeFilters.inStockOnly ? 'translate-x-6' : ''}`} />
                             </div>
                         </div>
@@ -150,7 +157,7 @@ export default function Filters({
                     onClick={() => setIsOpenMobile(false)} 
                     className="w-full bg-black text-white font-display text-xl tracking-[0.2em] py-5 uppercase"
                 >
-                    VOIR LES RÉSULTATS
+                    VOIR LES {availableTeams.length > 0 ? "MAILLOTS" : "RÉSULTATS"}
                 </button>
             </div>
         </div>
@@ -164,6 +171,7 @@ export default function Filters({
                     onClick={() => setIsOpenMobile(true)}
                     className="flex items-center gap-3 bg-white text-black font-display text-lg tracking-[0.2em] px-10 py-5 shadow-2xl border-2 border-black"
                 >
+                    <FilterIcon size={20} strokeWidth={1.5} />
                     FILTRER LA COLLECTION
                 </button>
             </div>
@@ -181,7 +189,7 @@ export default function Filters({
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="absolute inset-0 bg-black/60" 
+                            className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
                             onClick={() => setIsOpenMobile(false)} 
                         />
                         <motion.div 
@@ -189,7 +197,7 @@ export default function Filters({
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                            className="relative w-full sm:w-[400px] bg-white h-full shadow-2xl"
+                            className="relative w-full sm:w-[500px] bg-white h-full shadow-2xl"
                         >
                             <FilterContent />
                         </motion.div>

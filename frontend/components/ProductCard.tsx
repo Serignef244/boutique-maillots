@@ -47,17 +47,17 @@ export default function ProductCard({ product }: { product: any }) {
         </div>
         
         {/* Info Area */}
-        <div className="pt-6 pb-2">
-            <div className="flex flex-col gap-1">
+        <div className="pt-6 pb-4 px-1">
+            <div className="flex flex-col gap-2">
                 {product.team && (
-                    <p className="text-[10px] md:text-xs font-display text-gray-400 tracking-[0.3em] uppercase">{product.team}</p>
+                    <p className="text-[10px] md:text-xs font-display text-gray-400 tracking-[0.4em] uppercase font-bold">{product.team}</p>
                 )}
-                <div className="flex justify-between items-baseline gap-4">
-                  <h3 className="font-display text-xl md:text-2xl text-black leading-none tracking-wider uppercase group-hover:opacity-60 transition-opacity">
+                <div className="flex flex-col gap-1">
+                  <h3 className="font-display text-2xl md:text-4xl text-black leading-none tracking-tighter uppercase group-hover:opacity-70 transition-opacity">
                       {product.name}
                   </h3>
-                  <div className="text-xl md:text-2xl font-display text-black tracking-wider whitespace-nowrap">
-                    {product.price.toLocaleString()} F
+                  <div className="text-xl md:text-3xl font-display text-black/50 tracking-tighter mt-1">
+                    {product.price.toLocaleString()} FCFA
                   </div>
                 </div>
             </div>

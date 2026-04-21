@@ -54,11 +54,17 @@ export default function ExplorerPage() {
         return true;
     });
 
+    const availableTeams = Array.from(new Set(products.map(p => p.team).filter(Boolean)));
+
     return (
         <div className="max-w-7xl mx-auto px-4 py-24 min-h-screen text-black bg-white">
             <div className="flex flex-col lg:flex-row gap-16 mt-16">
                 {/* Colonne Filtres */}
-                <Filters activeFilters={activeFilters} onFilterChange={handleFilterChange} />
+                <Filters 
+                    activeFilters={activeFilters} 
+                    onFilterChange={handleFilterChange} 
+                    availableTeams={availableTeams}
+                />
 
                 {/* Grille Produits */}
                 <div className="flex-1 w-full pb-32">
