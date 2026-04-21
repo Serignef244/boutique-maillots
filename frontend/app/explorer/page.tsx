@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { getProducts } from '@/lib/api';
 import ProductCard from '@/components/ProductCard';
 import Filters from '@/components/Filters';
+import ProductSkeleton from '@/components/ProductSkeleton';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ExplorerPage() {
@@ -34,6 +35,14 @@ export default function ExplorerPage() {
         }));
     };
 
+    const handleChipToggle = (team: string) => {
+        const current = activeFilters.teams || [];
+        const updated = current.includes(team) 
+            ? current.filter((t: string) => t !== team) 
+            : [...current, team];
+        handleFilterChange('teams', updated);
+    };
+
     const filteredProducts = products.filter(p => {
         if (activeFilters.teams && activeFilters.teams.length > 0) {
             const matchesTeam = activeFilters.teams.some((team: string) => 
@@ -55,6 +64,13 @@ export default function ExplorerPage() {
     });
 
     const availableTeams = Array.from(new Set(products.map(p => p.team).filter(Boolean)));
+    const availableSizes = Array.from(new Set(products.flatMap(p => {
+        try {
+            return typeof p.sizes === 'string' ? JSON.parse(p.sizes) : p.sizes;
+        } catch (e) {
+            return [];
+        }
+    }))).filter(Boolean).sort();
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-24 min-h-screen text-black bg-white">
@@ -64,27 +80,49 @@ export default function ExplorerPage() {
                     activeFilters={activeFilters} 
                     onFilterChange={handleFilterChange} 
                     availableTeams={availableTeams}
+                    availableSizes={availableSizes}
                 />
 
                 {/* Grille Produits */}
                 <div className="flex-1 w-full pb-32">
                     
                     {/* En-tête de recherche/résultats */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-16 gap-8 border-b border-gray-100 pb-12">
-                        <div>
-                            <h1 className="font-display font-black text-6xl md:text-8xl text-black tracking-tighter uppercase leading-none">
+                    <div className="flex flex-col mb-12 border-b border-gray-100 pb-12">
+                        <div className="mb-8">
+                            <h1 className="font-display font-black text-6xl md:text-8xl text-black tracking-tighter uppercase leading-[0.8]">
                                 TOUTE LA COLLECTION
                             </h1>
-                            <p className="font-body text-gray-400 mt-4 text-base tracking-[0.3em] uppercase">
+                            <p className="font-body text-gray-400 mt-6 text-sm md:text-base tracking-[0.3em] uppercase">
                                 {filteredProducts.length} MODÈLE{filteredProducts.length > 1 ? 'S' : ''} DISPONIBLE{filteredProducts.length > 1 ? 'S' : ''}
                             </p>
+                        </div>
+
+                        {/* Quick Filter Chips (Mobile/Desktop) */}
+                        <div className="flex overflow-x-auto pb-4 gap-3 no-scrollbar -mx-4 px-4 mask-fade-right">
+                           <button 
+                             onClick={() => handleFilterChange('teams', [])}
+                             className={`px-6 py-2 whitespace-nowrap font-display text-sm tracking-widest border transition-all ${activeFilters.teams.length === 0 ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-200'}`}
+                           >
+                              TOUS
+                           </button>
+                           {availableTeams.sort().map(team => (
+                             <button 
+                                key={team}
+                                onClick={() => handleChipToggle(team)}
+                                className={`px-6 py-2 whitespace-nowrap font-display text-sm tracking-widest border transition-all ${activeFilters.teams.includes(team) ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-200 uppercase'}`}
+                             >
+                                {team}
+                             </button>
+                           ))}
                         </div>
                     </div>
 
                     {loading ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-                            {[1, 2, 3, 4, 5, 6].map(n => (
-                                <div key={n} className="aspect-[4/5] bg-brand-grey animate-pulse"></div>
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 md:gap-x-8 gap-y-12">
+                            {[1, 2, 3, 4, 5, 6].map((n, i) => (
+                                <div key={n} className={`${i % 4 === 0 ? 'col-span-2' : 'col-span-1'}`}>
+                                    <ProductSkeleton />
+                                </div>
                             ))}
                         </div>
                     ) : (
@@ -92,16 +130,17 @@ export default function ExplorerPage() {
                             {filteredProducts.length > 0 ? (
                                 <motion.div 
                                     layout
-                                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16"
+                                    className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 md:gap-x-8 gap-y-12 md:gap-y-16"
                                 >
-                                    {filteredProducts.map(product => (
+                                    {filteredProducts.map((product, index) => (
                                         <motion.div
                                             key={product.id}
                                             layout
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ duration: 0.4 }}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.9 }}
+                                            transition={{ duration: 0.4, delay: index * 0.05 }}
+                                            className={`${index % 4 === 0 ? 'col-span-2' : 'col-span-1'}`}
                                         >
                                             <ProductCard product={product} />
                                         </motion.div>

@@ -6,17 +6,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function Filters({ 
     onFilterChange, 
     activeFilters,
-    availableTeams = []
+    availableTeams = [],
+    availableSizes = []
 }: { 
     onFilterChange: (type: string, value: any) => void;
     activeFilters: any;
     availableTeams?: string[];
+    availableSizes?: string[];
 }) {
     const [isOpenMobile, setIsOpenMobile] = useState(false);
     
     // Trier les équipes par ordre alphabétique pour une meilleure expérience
     const sortedTeams = [...availableTeams].sort((a, b) => a.localeCompare(b));
-    const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+    // Utiliser les tailles dynamiques ou une liste de fallback
+    const sizes = availableSizes.length > 0 ? availableSizes : ['S', 'M', 'L', 'XL', 'XXL'];
     
     const [openSections, setOpenSections] = useState({
         equipe: true,
@@ -48,7 +51,7 @@ export default function Filters({
         <div className="w-full h-full flex flex-col p-6 lg:p-0 text-black font-body">
             {/* Header Mobile */}
             <div className="flex justify-between items-center lg:hidden mb-12 border-b border-gray-100 pb-6">
-                <h2 className="font-display text-4xl tracking-tighter uppercase">
+                <h2 className="font-display text-4xl tracking-tighter uppercase font-black">
                     FILTRES
                 </h2>
                 <button onClick={() => setIsOpenMobile(false)} className="p-2">
@@ -61,7 +64,7 @@ export default function Filters({
                 {/* Section Equipes (Dynamique) */}
                 <div className="border-b border-gray-100 pb-10">
                     <button onClick={() => toggleSection('equipe')} className="flex w-full justify-between items-center mb-8">
-                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase font-bold">ÉQUIPES DISPONIBLES</span>
+                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase font-bold">ÉQUIPES</span>
                         {openSections.equipe ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                     </button>
                     <AnimatePresence>
@@ -84,7 +87,9 @@ export default function Filters({
                                             <div className={`w-5 h-5 border transition-all flex items-center justify-center ${activeFilters.teams?.includes(team) ? 'bg-black border-black' : 'border-gray-200 group-hover:border-black'}`}>
                                                 {activeFilters.teams?.includes(team) && <div className="w-2 h-2 bg-white" />}
                                             </div>
-                                            <span className={`font-body text-base uppercase tracking-widest transition-colors ${activeFilters.teams?.includes(team) ? 'text-black font-bold' : 'text-gray-400 group-hover:text-black'}`}>{team}</span>
+                                            <span className={`font-body text-base uppercase tracking-widest transition-colors ${activeFilters.teams?.includes(team) ? 'text-black font-bold' : 'text-gray-400 group-hover:text-black'}`}>
+                                                {team}
+                                            </span>
                                         </label>
                                     ))
                                 ) : (
@@ -95,7 +100,7 @@ export default function Filters({
                     </AnimatePresence>
                 </div>
 
-                {/* Section Tailles */}
+                {/* Section Tailles (Dynamique) */}
                 <div className="border-b border-gray-100 pb-10">
                     <button onClick={() => toggleSection('taille')} className="flex w-full justify-between items-center mb-8">
                         <span className="font-display text-xl tracking-[0.2em] text-black uppercase font-bold">TAILLES</span>
@@ -130,7 +135,7 @@ export default function Filters({
                 {/* Autres filtres (Promos, Stock) */}
                 <div className="pb-10 space-y-8">
                     <label className="flex items-center justify-between cursor-pointer group">
-                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase font-bold">OFFRES SPÉCIALES</span>
+                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase font-bold">AVEC RÉDUCTION</span>
                         <div className="relative">
                             <input type="checkbox" className="hidden" checked={activeFilters.promoOnly || false} onChange={e => onFilterChange('promoOnly', e.target.checked)} />
                             <div className={`w-12 h-6 flex items-center p-1 transition-colors ${activeFilters.promoOnly ? 'bg-black' : 'bg-gray-100 border border-gray-200 group-hover:border-black'}`}>
@@ -140,7 +145,7 @@ export default function Filters({
                     </label>
 
                     <label className="flex items-center justify-between cursor-pointer group">
-                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase font-bold">DISPONIBLE EN STOCK</span>
+                        <span className="font-display text-xl tracking-[0.2em] text-black uppercase font-bold">EN STOCK UNIQUEMENT</span>
                         <div className="relative">
                             <input type="checkbox" className="hidden" checked={activeFilters.inStockOnly || false} onChange={e => onFilterChange('inStockOnly', e.target.checked)} />
                             <div className={`w-12 h-6 flex items-center p-1 transition-colors ${activeFilters.inStockOnly ? 'bg-black' : 'bg-gray-100 border border-gray-200 group-hover:border-black'}`}>
@@ -157,7 +162,7 @@ export default function Filters({
                     onClick={() => setIsOpenMobile(false)} 
                     className="w-full bg-black text-white font-display text-xl tracking-[0.2em] py-5 uppercase"
                 >
-                    VOIR LES {availableTeams.length > 0 ? "MAILLOTS" : "RÉSULTATS"}
+                    VOIR LES MAILLOTS
                 </button>
             </div>
         </div>
@@ -166,7 +171,7 @@ export default function Filters({
     return (
         <>
             {/* Bouton Mobile Fixe */}
-            <div className="lg:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-40">
+            <div className="lg:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-[60]">
                 <button 
                     onClick={() => setIsOpenMobile(true)}
                     className="flex items-center gap-3 bg-white text-black font-display text-lg tracking-[0.2em] px-10 py-5 shadow-2xl border-2 border-black"
@@ -207,3 +212,4 @@ export default function Filters({
         </>
     );
 }
+
