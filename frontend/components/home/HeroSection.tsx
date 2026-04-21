@@ -8,15 +8,23 @@ export default function HeroSection() {
 
   return (
     <section className="relative w-full h-[90vh] md:h-screen bg-white flex flex-col items-center justify-center overflow-hidden">
-      {/* Background Decorative - Very subtle grey circle */}
-      <div className="absolute top-[20%] left-[-10%] w-[60%] h-[60%] bg-brand-grey/50 blur-[120px] rounded-full pointer-events-none"></div>
+      {/* Full Background Image with Castore Grayscale Style */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="/images/messi.png" 
+          alt="Legends background" 
+          className="w-full h-full object-cover grayscale opacity-40"
+        />
+        {/* White overlay for text contrast */}
+        <div className="absolute inset-0 bg-white/40"></div>
+      </div>
 
       {/* Hero Content */}
       <div className="z-10 flex flex-col items-center px-4 max-w-7xl">
         <motion.p 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-display text-sm md:text-xl tracking-[0.5em] text-gray-300 mb-6 uppercase"
+          className="font-display text-sm md:text-xl tracking-[0.5em] text-black/60 mb-6 uppercase"
         >
           Nouveautés 2024
         </motion.p>
@@ -58,15 +66,6 @@ export default function HeroSection() {
             VOIR L'ÉDITORIAL
           </button>
         </motion.div>
-      </div>
-
-      {/* Subtle Visual - Player in background or floating */}
-      <div className="absolute right-0 bottom-0 w-[40%] h-[60%] pointer-events-none opacity-20 hidden lg:block">
-        <img 
-          src="/images/player-hero.png" 
-          alt="Player" 
-          className="w-full h-full object-contain object-bottom grayscale"
-        />
       </div>
     </section>
   );
